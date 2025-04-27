@@ -11,6 +11,7 @@ import myNotebook as nb
 from pathlib import Path
 from module_bgs import BGS_Page
 from module_depot import Depot_Page
+from module_system import System_Page
 from tkinter import colorchooser
 
 import semantic_version
@@ -73,19 +74,23 @@ def plugin_app(parent):
     notebook.config(width=500, height=350)
     notebook.pack(expand = True, fill ="both")
     #main_frame = tk.Frame(notebook, width= 250, height= 200)
-    bgs_frame = tk.Frame(notebook, width=300)
-    depot_frame = tk.Frame(notebook, width=300)
+    bgs_frame = tk.Frame(notebook)
+    depot_frame = tk.Frame(notebook)
+    system_frame = tk.Frame(notebook)
 
     #main_frame.pack(expand = True, fill ="both")
     bgs_frame.pack(expand = True, fill ="both")
     depot_frame.pack(expand = True, fill ="both")
-     
+    system_frame.pack(expand = True, fill = "both") 
+
     #notebook.add(main_frame, text ='Main') 
     notebook.add(bgs_frame, text ='BGS') 
-    notebook.add(depot_frame, text ='CS')
+    notebook.add(depot_frame, text ='Kolonizacja')
+    notebook.add(system_frame, text ='Systemy')
 
     this.bgs.show(bgs_frame)
     this.depot.show(depot_frame)
+    this.system.app(system_frame)
     return (frame)
 '''
 
@@ -140,6 +145,7 @@ def plugin_start3(plugin_dir: str) -> str:
     this.market = Market(this)
     this.bgs = BGS_Page(logger, this)
     this.depot = Depot_Page(logger, this)
+    this.system = System_Page(this)
 
     # test Marketu
     #this.market.load_journal()

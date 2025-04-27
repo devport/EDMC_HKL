@@ -28,9 +28,9 @@ class BGSMini_DB:
     try:
       # entry["Factions"]["SquadronFaction"] == True dla TWH
       # system_id = event["SystemAddress"], star_system = event["StarSystem"], faction_name = entry["SystemFaction"]["Name"], faction_state = entry["SystemFaction"]["FactionState"], influence = entry["Factions"]["Influence"]
-      self.sqlcur.execute("CREATE TABLE cmdr_systems (system_id INTEGER, group INTEGER, star_system TEXT, faction_name TEXT, faction_state TEXT, influence REAL DEFAULT 0, scan_time INTEGER DEFAULT 0)")
+      self.sqlcur.execute("CREATE TABLE cmdr_systems (system_id INTEGER, group_id INTEGER, star_system TEXT, faction_name TEXT, faction_state TEXT, influence REAL DEFAULT 0, scan_time INTEGER DEFAULT 0)")
       #
-      self.sqlcur.execute("CREATE TABLE cmdr_groups (id INTEGER, name TEXT)")
+      self.sqlcur.execute("CREATE TABLE cmdr_groups (id INTEGER, name TEXT, permission TEXT) PRIMARY KEY(\"id\" AUTOINCREMENT)")
       # system_id = event["SystemAddress"], name = entry["Factions"]["Name"], state = entry["Factions"]["FactionState"], goverment = entry["Factions"]["Government"], happiness_localised = entry["Factions"]["Happiness_Localised"], influence = entry["Factions"]["Influence"]
       self.sqlcur.execute("CREATE TABLE system_factions (system_id INTEGER , name TEXT, state TEXT, goverment TEXT, happiness_localised TEXT, influence REAL DEFAULT 0)")
       # tabela obiektow (marketow)
@@ -79,7 +79,7 @@ class BGSMini_DB:
       self.sqlconn.commit()
       print(f" SQL UPDATE {table} SET {values} {qwhere}:")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when UPDATE {table} SET {values} {qwhere}:")
+      print(f" !! --> sqlite3.Operational Error when UPDATE {table} SET {values} {qwhere}")
 
   # DELETE FROM table WHERE where
   def Delete(self, table, where) -> bool:  
@@ -91,7 +91,7 @@ class BGSMini_DB:
       self.sqlconn.commit()
       print(f" SQL DELETE FROM {table} {qwhere}:")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when DELETE FROM {table} {qwhere}:")
+      print(f" !! --> sqlite3.Operational Error when DELETE FROM {table} {qwhere}")
       return False
     return True
 

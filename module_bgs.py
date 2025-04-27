@@ -158,12 +158,13 @@ class BGS_Page:
     
     self.combobox_current_group = ttk.Combobox(self.topframe)
     self.combobox_current_group.pack(side="left", fill="x", expand=True)
+    self.combobox_current_group.config(state='readonly')
 
     def Select_Group_Combo(event):
-      group_row = self.db.Select('cmdr_groups', 'id', f"name = '{self.combobox_current_group.get()}' ", True)
+      group_row = self.db.Select('cmdr_groups', 'id, name', f"name = '{self.combobox_current_group.get()}' ", True)
       self.current_group = None
       if group_row:
-        self.current_group = group_row[0]
+        self.current_group = {"id" : group_row[0], "name" :group_row[1]}
       self.update_widgets()
 
     self.combobox_current_group.bind('<<ComboboxSelected>>', Select_Group_Combo)
@@ -229,19 +230,26 @@ class BGS_Page:
     group_rows = self.db.Select('cmdr_groups', 'id, name', '')
     self.groups = []
     if group_rows :
-      for group_item in group_rows:
-        self.groups.append(group_item[0])
-    else:
       self.groups.append("Wszystkie")
+      for group_item in group_rows:
+         self.groups.append(group_item[1])
+    else:
+       self.groups.append("Wszystkie")
 
     self.combobox_current_group.config(values=self.groups)
 
     self.combobox_current_group.current(0)
     if self.current_group != None :
-      self.combobox_current_group.current(self.current_group)
+      self.combobox_current_group.set(self.current_group['name'])
 
   # -- Systemy
-    system_rows = self.db.Select('cmdr_systems', '', '')
+    if self.current_group != None :
+      system_rows = self.db.Select('cmdr_systems', 'system_id, star_system, faction_name, faction_state, influence, scan_time', F"group_id = {self.current_group['id']}")
+    else:
+      system_rows = self.db.Select('cmdr_systems', 'system_id, star_system, faction_name, faction_state, influence, scan_time', '')
+    if system_rows == None:
+      return
+    print(system_rows)
     for system_row in system_rows:
       self.system_id += 1
       #robimy lokalna zmienna z id systemu, nazwa
@@ -249,7 +257,7 @@ class BGS_Page:
       #sprawdzanie czasu wygasniecia
       dt = datetime.datetime.now()
       seq = int(dt.strftime("%Y%m%d%H%M%S"))
-      print(seq)
+
       if system_row[5] > seq :
         self.check_img.append(tk.PhotoImage(file=f"{Path(self.plugin_dir)}/img/check_ok16.png"))
       elif system_row[5] == 0:
