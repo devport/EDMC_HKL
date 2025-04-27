@@ -240,9 +240,11 @@ def journal_entry(cmdrname: str, is_beta: bool, system: str, station: str, entry
             this.SquadronName = entry['SquadronName']
             config.set("BGSMini_SquadronName", this.SquadronName)
 
+    this.system.update(cmdrname, is_beta, system, station, entry, state)
     this.market.update(cmdrname, is_beta, system, station, entry, state)
     this.bgs.update(cmdrname, is_beta, system, station, entry, state)
     this.depot.update(cmdrname, is_beta, system, station, entry, state)
+
 
     #this.market.load()
     #print(this.market.get_comm())

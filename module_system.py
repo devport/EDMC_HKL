@@ -15,6 +15,8 @@ class System_Page:
         self.groups = []
         self.current_group = None 
 
+        self.current_system = None
+        self.selected_system = None
 
         print('Init System Page')
 
@@ -55,14 +57,14 @@ class System_Page:
         # frame system
         self.label_system_title = tk.Label(frame_system_frame1, text="Aktywny : ")
         self.label_system_title.pack(side='left', expand=False)
-        self.label_system_name = tk.Label(frame_system_frame1, text="-")
-        self.label_system_name.pack(side='left', expand=True)
+        self.label_system_current_name = tk.Label(frame_system_frame1, text="-")
+        self.label_system_current_name.pack(side='left', expand=True)
 
         self.button_system_remove = tk.Button(frame_system_frame1, text="Usuń", command=self.window_system_remove)
         self.button_system_remove.pack(side='right', expand=False)
         self.button_system_add = tk.Button(frame_system_frame1, text="Dodaj", command=self.window_system_add)
         self.button_system_add.pack(side='right', expand=False)
-        self.button_system_edit = tk.Button(frame_system_frame1, text="Edytuj")
+        self.button_system_edit = tk.Button(frame_system_frame1, text="Edytuj", command=self.window_system_edit)
         self.button_system_edit.pack(side='right', expand=False)
 
         self.treeview_systems = ttk.Treeview(frame_system_frame2, columns=('MajorFaction'))
@@ -72,6 +74,11 @@ class System_Page:
         self.treeview_systems.column('MajorFaction', minwidth=100, width=50)
         self.treeview_systems.pack(fill ="both", expand = True)
 
+        def select_system(event):
+            selected = self.treeview_systems.focus() 
+            self.selected_system = self.treeview_systems.item(selected)['text']
+
+        self.treeview_systems.bind("<<TreeviewSelect>>", select_system)
 
         self.update_widgets()
         print('System Page : end app')
@@ -98,6 +105,9 @@ class System_Page:
             self.treeview_systems.delete(i)
 
         # frame system
+        if self.current_system:
+            self.label_system_current_name.config(text=self.current_system)
+
         self.system_items = []
         if self.current_group != None:
             system_rows = self.db.Select('cmdr_systems', 'star_system, faction_name', f"group_id = {self.current_group['id']}")
@@ -164,6 +174,8 @@ class System_Page:
     def window_system_add(self):
         print('System Page : begin window_system_add')
         new_name = tk.StringVar()
+        if self.current_system:
+            new_name.set(self.current_system)
         add_wnd = tk.Toplevel(self.parent)
         frame = ttk.Frame(add_wnd)
         combobox_groups = ttk.Combobox(frame)
@@ -183,6 +195,7 @@ class System_Page:
 
         add_wnd.title("Dodaj system")
         add_wnd.geometry("300x200")
+        add_wnd.resizable(width=False, height=False)
 
         frame.pack(padx=5, fill='both', expand=True)
 
@@ -218,25 +231,89 @@ class System_Page:
 
     def window_system_remove(self):
         print('System Page : begin window_group_remove')
-        selected = self.treeview_systems.focus() 
-        system_name = self.treeview_systems.item(selected)['text']
         remove_wnd = tk.Toplevel(self.parent)
 
         def system_query_remove_yes():
-            self.db.Delete('cmdr_systems', f"star_system = '{system_name}'")
+            self.db.Delete('cmdr_systems', f"star_system = '{self.selected_system}'")
             remove_wnd.destroy()
             remove_wnd.update()
             self.update_widgets()
         remove_wnd.title("Usuń system")
         remove_wnd.geometry("300x120")
+        remove_wnd.resizable(width=False, height=False)
         remove_wnd_frame = ttk.Frame(remove_wnd)
         remove_wnd_frame.pack(padx=5, fill='both', expand=True)
         label_remove_query = tk.Label(remove_wnd_frame, text="Czy napewno chcesz usunąć system:")
         label_remove_query.pack(side='top', fill='x', expand=True)
-        label_remove_system_name = tk.Label(remove_wnd_frame, text=f'"{system_name}"')
+        label_remove_system_name = tk.Label(remove_wnd_frame, text=f'"{self.selected_system}"')
         label_remove_system_name.pack(side='top', fill='x', expand=True)
         button_remove_yes = tk.Button(remove_wnd_frame, text="Tak", command=system_query_remove_yes)
         button_remove_yes.pack(side='top', fill='x', expand=True)
         button_remove_no = tk.Button(remove_wnd_frame, text="Nie", command=remove_wnd.destroy)
         button_remove_no.pack(side='top', fill='x', expand=True)
         print('System Page : end window_group_remove')
+
+    def window_system_edit(self):
+        print('System Page : begin window_system_edit')
+
+        system_row = self.db.Select('cmdr_systems', 'star_system, group_id', F"star_system = '{self.selected_system}'", True)
+        system_group_row = self.db.Select('cmdr_groups', 'name, id', F"id = {system_row[1]}", True)
+        sys_name = tk.StringVar()
+        sys_name.set(system_row[0])
+        edit_wnd = tk.Toplevel(self.parent)
+        frame = ttk.Frame(edit_wnd)
+        combobox_groups = ttk.Combobox(frame)
+        
+        def system_management_save():
+            if sys_name.get() == "":
+                return
+            group_id_row = self.db.Select('cmdr_groups','id', f"name = '{combobox_groups.get()}'",True)
+            if group_id_row:
+                group_id = group_id_row[0]
+            else:
+                group_id = 'NULL'
+            self.db.Update('cmdr_systems', f"star_system = '{sys_name.get()}', group_id = {group_id}", f"star_system = '{self.selected_system}'")
+            edit_wnd.destroy()
+            edit_wnd.update()
+            self.update_widgets()
+
+        edit_wnd.title("Edytuj system")
+        edit_wnd.geometry("300x200")
+        edit_wnd.resizable(width=False, height=False)
+        frame.pack(padx=5, fill='both', expand=True)
+
+        system_name_label = tk.Label(frame, text="Nazwa systemu:")
+        system_name_label.pack(side='top', fill='x', expand=True)
+    
+        system_name_entry = tk.Entry(frame, textvariable=sys_name)
+        system_name_entry.pack(side='top', fill='x', expand=True)
+        system_name_entry.focus()
+
+        system_group_label = tk.Label(frame, text="Grupa")
+        system_group_label.pack(side='top', )
+
+        group_rows = self.db.Select('cmdr_groups', 'id, name', '')
+        groups = []
+        if group_rows :
+            groups.append("Brak")
+            for group_item in group_rows:
+                groups.append(group_item[1])
+        else:
+            groups.append("Brak")
+        
+        combobox_groups.config(state='readonly')
+        combobox_groups.pack(side='top', fill='x', expand=True)
+        combobox_groups.config(values=groups)
+        combobox_groups.current(0)   
+        if system_row[1] != None:
+            combobox_groups.set(system_group_row[0])    
+        button_add = tk.Button(frame, text="Zapisz", command=system_management_save)
+        button_add.pack(side='top', fill='x', expand=True)
+        button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
+        button_cancel.pack(side='top', fill='x', expand=True)
+        print('System Page : end window_system_edit')
+
+    #aktualizacja ze zdarzenia dziennika gry
+    def update(self, cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict):
+        self.current_system = system
+        self.update_widgets()
