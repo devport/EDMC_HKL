@@ -10,7 +10,7 @@ import shutil
 import myNotebook as nb
 from pathlib import Path
 from module_bgs import BGS_Page
-from module_depot import Depot_Page
+from module_depot import Colonization_Page
 from module_system import System_Page
 from tkinter import colorchooser
 
@@ -144,7 +144,7 @@ def plugin_start3(plugin_dir: str) -> str:
     this.plugin_dir = plugin_dir
     this.market = Market(this)
     this.bgs = BGS_Page(logger, this)
-    this.depot = Depot_Page(logger, this)
+    this.depot = Colonization_Page(logger, this)
     this.system = System_Page(this)
 
     # test Marketu

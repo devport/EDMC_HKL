@@ -7,10 +7,8 @@ from pathlib import Path
 from module_db import BGSMini_DB
 
 
-# C:\Users\kwiec\Saved Games\Frontier Developments\Elite Dangerous
-
 this = sys.modules[__name__]
-class Depot_Page:
+class Colonization_Page:
   def __init__(self, logger, root):
     self.plugin_dir = root.plugin_dir
     self.logger = logger
