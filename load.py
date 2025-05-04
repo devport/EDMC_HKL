@@ -10,7 +10,7 @@ import shutil
 import myNotebook as nb
 from pathlib import Path
 from module_bgs import BGS_Page
-from module_depot import Colonization_Page
+from module_depot import Depot_Page
 from module_system import System_Page
 from tkinter import colorchooser
 
@@ -29,7 +29,6 @@ this.label_station_info = tk.Label
 this.economy_table = ttk.Treeview
 this.table_frac = ttk.Treeview
 this.label_frac = tk.Label
-this.bgs = BGS_Page
 this.username = ''
 this.userApikey = ''
 this.SquadronName = ''
@@ -71,7 +70,7 @@ def plugin_app(parent):
     
     frame = tk.Frame(parent)
     notebook = ttk.Notebook(frame)
-    notebook.config(width=500, height=350)
+    notebook.config(width=600, height=550)
     notebook.pack(expand = True, fill ="both")
     #main_frame = tk.Frame(notebook, width= 250, height= 200)
     bgs_frame = tk.Frame(notebook)
@@ -85,7 +84,7 @@ def plugin_app(parent):
 
     #notebook.add(main_frame, text ='Main') 
     notebook.add(bgs_frame, text ='BGS') 
-    notebook.add(depot_frame, text ='Kolonizacja')
+    notebook.add(depot_frame, text ='Magazyn')
     notebook.add(system_frame, text ='Systemy')
 
     this.bgs.show(bgs_frame)
@@ -144,7 +143,7 @@ def plugin_start3(plugin_dir: str) -> str:
     this.plugin_dir = plugin_dir
     this.market = Market(this)
     this.bgs = BGS_Page(logger, this)
-    this.depot = Colonization_Page(logger, this)
+    this.depot = Depot_Page(logger, this)
     this.system = System_Page(this)
 
     # test Marketu
@@ -194,7 +193,7 @@ def plugin_prefs(parent, cmdr, is_beta):
     def choose_color(tag_name):
         match tag_name:
             case 'faction':
-                this.tag_fact_color.color = colorchooser.askcolor(title ="Wybierz kolor")[1]
+                this.tag_fact_color = colorchooser.askcolor(title ="Wybierz kolor")[1]
                 fact_faction_tag_label.config(bg=this.tag_fact_color)
             case 'high':
                 this.tag_high_color = colorchooser.askcolor(title ="Wybierz kolor")[1]
@@ -218,7 +217,12 @@ def plugin_prefs(parent, cmdr, is_beta):
 
 
     return frame    
-
+def update_widgets():
+    print("-------------------------------------------")
+    this.system.update_widgets()
+    this.bgs.update_widgets()
+    this.depot.update_widgets()
+    print("--------END ------------------------------")
 # settings
 def prefs_changed(cmdr, is_beta):
     print('preffs functiion entry')

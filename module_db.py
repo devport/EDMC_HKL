@@ -8,13 +8,12 @@ class BGSMini_DB:
     self.dbfile_name = 'bgsmini.db'
 
     self.dbfile_path = Path(plugin_dir) / self.dbfile_name
-    createTables = False
-    if not self.dbfile_path.exists():
-      createTables = True
+    create_table = False
+    if not Path.exists(self.dbfile_path):
+      create_table = True
     self.sqlconn = sqlite3.connect(self.dbfile_path)
     self.sqlcur = self.sqlconn.cursor()
-
-    if createTables == True:
+    if create_table:
       self.CreateTables()
 
 
@@ -30,15 +29,15 @@ class BGSMini_DB:
       # system_id = event["SystemAddress"], star_system = event["StarSystem"], faction_name = entry["SystemFaction"]["Name"], faction_state = entry["SystemFaction"]["FactionState"], influence = entry["Factions"]["Influence"]
       self.sqlcur.execute("CREATE TABLE cmdr_systems (system_id INTEGER, group_id INTEGER, star_system TEXT, faction_name TEXT, faction_state TEXT, influence REAL DEFAULT 0, scan_time INTEGER DEFAULT 0)")
       #
-      self.sqlcur.execute("CREATE TABLE cmdr_groups (id INTEGER, name TEXT, permission TEXT) PRIMARY KEY(\"id\" AUTOINCREMENT)")
+      self.sqlcur.execute("CREATE TABLE cmdr_groups (id INTEGER, name TEXT, permission TEXT, PRIMARY KEY(\"id\" AUTOINCREMENT))")
       # system_id = event["SystemAddress"], name = entry["Factions"]["Name"], state = entry["Factions"]["FactionState"], goverment = entry["Factions"]["Government"], happiness_localised = entry["Factions"]["Happiness_Localised"], influence = entry["Factions"]["Influence"]
-      self.sqlcur.execute("CREATE TABLE system_factions (system_id INTEGER , name TEXT, state TEXT, goverment TEXT, happiness_localised TEXT, influence REAL DEFAULT 0)")
+      self.sqlcur.execute("CREATE TABLE system_factions (star_system TEXT , name TEXT, state TEXT, goverment TEXT, happiness_localised TEXT, influence REAL DEFAULT 0)")
       # tabela obiektow (marketow)
-      self.sqlcur.execute("CREATE TABLE system_objects (system_id INTEGER , stationname TEXT, stationname_localised TEXT, market_id INTEGER DEFAULT 0, progress REAL DEFAULT 0)")
-      self.sqlcur.execute("CREATE TABLE object_materials (system_id INTEGER , name TEXT, name_localised TEXT, market_id INTEGER DEFAULT 0, RequiredAmount INTEGER DEFAULT 0, ProvidedAmount INTEGER DEFAULT 0, Payment INTEGER DEFAULT 0)")
+      self.sqlcur.execute("CREATE TABLE system_objects (star_system TEXT, stationname TEXT, stationname_localised TEXT, market_id INTEGER DEFAULT 0, progress REAL DEFAULT 0)")
+      self.sqlcur.execute("CREATE TABLE object_materials (star_system TEXT, name TEXT, name_localised TEXT, market_id INTEGER DEFAULT 0, RequiredAmount INTEGER DEFAULT 0, ProvidedAmount INTEGER DEFAULT 0, Payment INTEGER DEFAULT 0)")
       # tabela fleet carrier
       self.sqlcur.execute("CREATE TABLE markets (market_id INTEGER, name TEXT, star_system TEXT, station_type TEXT)")  
-      self.sqlcur.execute("CREATE TABLE market_materials (market_id INTEGER, name TEXT, name_localised TEXT, category TEXT, stock INTEGER, BuyPrice INTEGER, SellPrice INTEGER)")
+      self.sqlcur.execute("CREATE TABLE market_materials (market_id INTEGER, name TEXT, name_localised TEXT, category TEXT, stock INTEGER, Demand INTEGER, BuyPrice INTEGER, SellPrice INTEGER)")
     except sqlite3.OperationalError:
       print(f" !! --> sqlite3.Operational Error when CREATE TABLE")
       #logger.exception('sqlite3.OperationalError when CREATE TABLE entries:')
@@ -77,7 +76,7 @@ class BGSMini_DB:
     try:
       self.sqlcur.execute(f"UPDATE {table} SET {values} {qwhere}")
       self.sqlconn.commit()
-      print(f" SQL UPDATE {table} SET {values} {qwhere}:")
+      print(f" SQL UPDATE {table} SET {values} {qwhere} ")
     except sqlite3.OperationalError:
       print(f" !! --> sqlite3.Operational Error when UPDATE {table} SET {values} {qwhere}")
 
@@ -89,7 +88,7 @@ class BGSMini_DB:
     try:
       self.sqlcur.execute(f"DELETE FROM {table} {qwhere}")
       self.sqlconn.commit()
-      print(f" SQL DELETE FROM {table} {qwhere}:")
+      print(f" SQL DELETE FROM {table} {qwhere} ")
     except sqlite3.OperationalError:
       print(f" !! --> sqlite3.Operational Error when DELETE FROM {table} {qwhere}")
       return False

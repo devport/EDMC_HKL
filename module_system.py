@@ -25,14 +25,14 @@ class System_Page:
         print('System Page : begin app')
         self.parent = parent
         # frames
-        frame_group = tk.LabelFrame(parent, text="Grupa", height=50)
-        frame_group.pack(side="top", fill='x', expand=True)
+        frame_group = tk.LabelFrame(self.parent, text="Grupa")
+        frame_group.pack(fill='x')
 
         
-        frame_system = tk.LabelFrame(parent, text="Systemy")
+        frame_system = tk.LabelFrame(self.parent, text="Systemy")
         frame_system.pack(fill="both", expand=True)
         frame_system_frame1 = tk.Frame(frame_system)
-        frame_system_frame1.pack(side='top', fill='x', expand=True)
+        frame_system_frame1.pack(side='top', fill='x')
         frame_system_frame2 = tk.Frame(frame_system)
         frame_system_frame2.pack(side='top', fill='both', expand=True)
         
@@ -77,7 +77,7 @@ class System_Page:
         def select_system(event):
             selected = self.treeview_systems.focus() 
             self.selected_system = self.treeview_systems.item(selected)['text']
-
+            print("-->>select : " + self.selected_system)
         self.treeview_systems.bind("<<TreeviewSelect>>", select_system)
 
         self.update_widgets()
@@ -100,11 +100,11 @@ class System_Page:
         if self.current_group != None:
             self.combobox_groups.set(self.current_group['name'])   
         
-
+        
+        # frame system
         for i in self.treeview_systems.get_children():
             self.treeview_systems.delete(i)
 
-        # frame system
         if self.current_system:
             self.label_system_current_name.config(text=self.current_system)
 
@@ -137,7 +137,7 @@ class System_Page:
             self.db.Insert('cmdr_groups','name, permission', f"'{new_name.get()}', '{perm[:-1]}' ")
             add_wnd.destroy()
             add_wnd.update()
-            self.update_widgets()
+            self.root.update_widgets()
 
         add_wnd = tk.Toplevel(self.parent)
         add_wnd.title("Dodaj grupę")
@@ -168,7 +168,7 @@ class System_Page:
         print('System Page : begin window_group_remove')
         self.db.Delete('cmdr_groups', f"name = '{self.combobox_groups.get()}'")
         self.current_group = None
-        self.update_widgets()
+        self.root.update_widgets()
         print('System Page : end window_group_remove')
 #systems
     def window_system_add(self):
@@ -191,7 +191,7 @@ class System_Page:
             self.db.Insert('cmdr_systems','star_system, group_id', f"'{new_name.get()}', {group_id}")
             add_wnd.destroy()
             add_wnd.update()
-            self.update_widgets()
+            self.root.update_widgets()
 
         add_wnd.title("Dodaj system")
         add_wnd.geometry("300x200")
@@ -237,7 +237,7 @@ class System_Page:
             self.db.Delete('cmdr_systems', f"star_system = '{self.selected_system}'")
             remove_wnd.destroy()
             remove_wnd.update()
-            self.update_widgets()
+            self.root.update_widgets()
         remove_wnd.title("Usuń system")
         remove_wnd.geometry("300x120")
         remove_wnd.resizable(width=False, height=False)
@@ -311,6 +311,7 @@ class System_Page:
         button_add.pack(side='top', fill='x', expand=True)
         button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
+        self.root.update_widgets()
         print('System Page : end window_system_edit')
 
     #aktualizacja ze zdarzenia dziennika gry

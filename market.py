@@ -50,7 +50,7 @@ class Market:
         self.star_system = market_row[0][1]
         self.station_type = market_row[0][2]
         
-        material_rows = self.db.Select('market_materials', 'name, name_localised, category, stock, BuyPrice, SellPrice', f"market_id = {marketid}")
+        material_rows = self.db.Select('market_materials', 'name, name_localised, category, stock, Demand, BuyPrice, SellPrice', f"market_id = {marketid}")
         for material_row in material_rows:
             material  = {
                         'Id'                : int,
@@ -68,8 +68,9 @@ class Market:
             material['Name_Localised'] = material_row[1]
             material['Category'] = material_row[2]
             material['Stock'] = material_row[3]
-            material['BuyPrice'] = material_row[4]
-            material['SellPrice'] = material_row[5]
+            material['Demand'] = material_row[3]
+            material['BuyPrice'] = material_row[5]
+            material['SellPrice'] = material_row[6]
             self.commodity_names.append(material)
 
     # Zapisanie do bazy danych
@@ -79,7 +80,7 @@ class Market:
             self.db.Insert('markets', 'market_id, name, star_system, station_type', f"{self.id}, \"{self.name}\", \"{self.star_system}\", \"{self.station_type}\"  ")
             self.db.Delete('market_materials', f"market_id = {self.id}")
             for material_item in self.commodity_names:
-                self.db.Insert('market_materials', 'market_id, name, name_localised, category, stock, BuyPrice, SellPrice', f"{self.id}, \"{material_item['Name']}\", \"{material_item['Name_Localised']}\", \"{material_item['Category']}\", {material_item['Stock']}, {material_item['BuyPrice']}, {material_item['SellPrice']} ")
+                self.db.Insert('market_materials', 'market_id, name, name_localised, category, stock, Demand, BuyPrice, SellPrice', f"{self.id}, \"{material_item['Name']}\", \"{material_item['Name_Localised']}\", \"{material_item['Category']}\", {material_item['Stock']}, {material_item['Demand']}, {material_item['BuyPrice']}, {material_item['SellPrice']} ")
         
     # parsowanie pliku
     def _parse(self):
@@ -108,6 +109,7 @@ class Market:
                         'Name_Localised'    : str,
                         'Category'          : str,
                         'Stock'             : int, 
+                        'Demand'            : int, 
                         'BuyPrice'          : int,
                         'SellPrice'         : int
                     }
@@ -115,6 +117,7 @@ class Market:
                     material['Name_Localised'] =  item.get('Name_Localised', "")
                     material['Category'] = item.get('Category', "")[17:-1] 
                     material['Stock'] = item.get('Stock', 0)
+                    material['Demand'] = item.get('Demand', 0)
                     material['BuyPrice'] = item.get('BuyPrice', 0)
                     material['SellPrice'] = item.get('SellPrice', 0)
                     if material['Name'] == "": continue

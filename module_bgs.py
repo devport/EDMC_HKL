@@ -116,16 +116,18 @@ class BGS_Page:
 
   # -- Grupy
     group_rows = self.db.Select('cmdr_groups', 'id, name', '')
-    self.groups = []
+    print(group_rows)
+    groups = []
     if group_rows :
-      self.groups.append("Wszystkie")
+      groups.append("Wszystkie")
       for group_item in group_rows:
-         self.groups.append(group_item[1])
+         groups.append(group_item[1])
     else:
-       self.groups.append("Wszystkie")
-
-    self.combobox_current_group.config(values=self.groups)
-
+       groups.append("Wszystkie")
+    
+    print("--->> aktualizacja w bgs grup")
+    print(groups)
+    self.combobox_current_group.config(values=groups)
     self.combobox_current_group.current(0)
     if self.current_group != None :
       self.combobox_current_group.set(self.current_group['name'])
@@ -162,32 +164,46 @@ class BGS_Page:
 
       self.system_item.append(self.treeview.insert('', index='end', text=system_row[1], values = (str(system_row[3]), str(round(system_row[4],2))+'%'), image=self.check_img[self.system_id-1], tags=sys_tag))
       #ladowanie frakcji
-      faction_rows = self.db.Select('system_factions', '', f"system_id = {system_row[0]}")
-      for faction_row in faction_rows:
-        fact_tag = 'normal'
-        if faction_row[1].upper() == system_row[1]:
-          if round(faction_row[4],2) > self.high_level :
-            fact_tag = 'high'
-          elif round(faction_row[4],2) < self.low_level:
-            fact_tag = 'low'
-          else:
-            fact_tag = 'faction'
-        self.faction_item.append(self.treeview.insert(self.system_item[self.system_id-1], 'end',  text= faction_row[1], values = (faction_row[2], str(round(faction_row[5], 2))+'%') , tags=fact_tag))
-    
+      faction_rows = self.db.Select('system_factions', '', f"star_system = \"{system_row[1]}\"")
+      if faction_rows:
+        for faction_row in faction_rows:
+          fact_tag = 'normal'
+          #print(faction_row[1].upper() + " == " + system_row[2].upper())
+          if faction_row[1].upper() == system_row[2].upper():
+            if round(faction_row[5],2) > self.high_level :
+              fact_tag = 'high'
+            elif round(faction_row[5],2) < self.low_level:
+              fact_tag = 'low'
+            else:
+              fact_tag = 'faction'
+          self.faction_item.append(self.treeview.insert(self.system_item[self.system_id-1], 'end',  text= faction_row[1], values = (faction_row[2], str(round(faction_row[5], 2))+'%') , tags=fact_tag))
+      
 
 #aktualizacja ze zdarzenia dziennika gry
   def update(self, cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict):
     if entry['event'] == 'FSDJump':
-      self.db.Delete('system_factions', f"system_id = {entry['SystemAddress']}")  
-      #dodaje nowe wpisy  
-      if 'Factions' in entry:
-        for faction in entry['Factions']:
-          #aktualizacja danych 
-          dt = datetime.datetime.now()
-          seq = int(dt.strftime("%Y%m%d%H%M%S"))
-          if 'SquadronFaction' in faction:
-            if faction["SquadronFaction"] :
-              self.db.Update('cmdr_systems', f"system_id = {entry['SystemAddress']}, faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f" star_system = \"{entry['StarSystem']}\"")
-          self.db.Insert('system_factions', 'system_id, name, state, goverment, happiness_localised, influence', f"{entry['SystemAddress']}, \"{faction['Name']}\", \"{faction['FactionState']}\", \"{faction['Government']}\", \"{faction['Happiness_Localised']}\", {faction['Influence'] * 100}")
+
+      check_system_row = self.db.Select('cmdr_systems', 'system_id', f'star_system = "{system}"', True)
+      print('->update system1')
+      if check_system_row:
+        print('->update system2')
+        #self.db.Update('cmdr_systems', f"faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f"star_system = \"{system}\"")
+
+        self.db.Delete('system_factions', f"star_system = \"{system}\"")  
+        #dodaje nowe wpisy  
+
+        #if 'SystemFaction' in entry:
+        #  self.db.Update('cmdr_systems', f"star_system = \"{system}\", faction_name = \"{entry['SystemFaction']['Name']}\", faction_state = \"{entry['SystemFaction']['FactionState']}\", scan_time = {seq+240000}", f" star_system = \"{entry['StarSystem']}\"")
+
+        if 'Factions' in entry:
+          print('->update system3')
+          for faction in entry['Factions']:
+            #aktualizacja danych 
+            dt = datetime.datetime.now()
+            seq = int(dt.strftime("%Y%m%d%H%M%S"))
+            if 'SquadronFaction' in faction:
+              if faction["SquadronFaction"] :
+                self.db.Update('cmdr_systems', f"star_system = \"{system}\", faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f" star_system = \"{entry['StarSystem']}\"")
+            self.db.Insert('system_factions', 'star_system, name, state, goverment, happiness_localised, influence', f"\"{system}\", \"{faction['Name']}\", \"{faction['FactionState']}\", \"{faction['Government']}\", \"{faction['Happiness_Localised']}\", {faction['Influence'] * 100}")
       self.update_widgets()    
     
