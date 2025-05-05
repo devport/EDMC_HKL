@@ -6,6 +6,7 @@ Nie jestem zawodowym programistą.
 Wersja alpha 0.1
 
 Co zostało zrobione:
+
 W Plik/Ustawienia:
 - możliwość zmiany kolorów na liście w zakładce BGS
 
@@ -16,9 +17,9 @@ Systemy:
 BGS:
 - Obecnie tylko wczytuje frakcje w systemie i wyświetla je na liście
 - Są zdefiniowane 3 kolory (high, low, faction)
--- high (czerwony) dla frakcji/systemu którego wpływy przekroczą 60 %
--- low (fioletowy) dla frakcji/systemu którego wpływy spadną poniżej 40 %
--- faction(zielonkawy) dla frakcji/systemu gracza
+* high (czerwony) dla frakcji/systemu którego wpływy przekroczą 60 %
+* low (fioletowy) dla frakcji/systemu którego wpływy spadną poniżej 40 %
+* faction(zielonkawy) dla frakcji/systemu gracza
 - wszelkie dane są aktualizowane w momencie zakończenia skoku do systemu
 - ! podwójne kliknięcie myszką zapisuje do schowka nazwę systemu/frakcji z listy
 
@@ -36,9 +37,9 @@ Co do zrobienia:
 - refaktoryzacja kodu
 - poprwaianie znanych błędów
 - tryb online umożliwiający współdzielenie danych o obiektach, systemach
--- każde dokowanie CMDR'a na obiekcie odświeży listę u innych posiadajacych ten obiekt w swojej wtyczce
--- notatnik i możliwość jego udostępniania innym CMDR.
--- wystawianie alertów dla innych CMDR'ów, aby pomogli w np. ustabilizowaniu wpływów w systemie
+* każde dokowanie CMDR'a na obiekcie odświeży listę u innych posiadajacych ten obiekt w swojej wtyczce
+* notatnik i możliwość jego udostępniania innym CMDR.
+* wystawianie alertów dla innych CMDR'ów, aby pomogli w np. ustabilizowaniu wpływów w systemie
 
 
 
