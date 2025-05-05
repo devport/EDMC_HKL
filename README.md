@@ -6,6 +6,9 @@ Nie jestem zawodowym programistą.
 Wersja alpha 0.1
 
 Co zostało zrobione:
+W Plik/Ustawienia:
+- możliwość zmiany kolorów na liście w zakładce BGS
+
 Systemy:
 - Tworzenie grup systemów
 - wykrywanie systemu w którym się znajdujemy
