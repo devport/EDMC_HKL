@@ -133,7 +133,7 @@ class Depot_Page:
     # wczytanie materialow 
 
    
-    self.select_market_materials = None
+    #self.select_market_materials = None
     if self.select_market != None: 
       self.select_market_materials = self.db.Select('market_materials', 'name, name_localised, stock', f"market_id = {self.select_market['MarketID']}")
     
