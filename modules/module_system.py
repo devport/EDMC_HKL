@@ -263,7 +263,7 @@ class System_Page:
         button_remove_no.pack(side='top', fill='x', expand=True)
 
     def window_system_edit(self):
-        if self.select_system == None:
+        if self.selected_system == None:
             return
         system_row = self.db.Select('cmdr_systems', 'star_system, group_id', F"star_system = '{self.selected_system}'", True)
         system_group_row = self.db.Select('cmdr_groups', 'name, id', F"id = {system_row[1]}", True)
