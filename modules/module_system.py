@@ -184,6 +184,7 @@ class System_Page:
         self.db.Delete('cmdr_groups', f"name = '{self.combobox_groups.get()}'")
         self.current_group = None
         self.root.update_widgets()
+
 #systems
     def window_system_add(self):
         new_name = tk.StringVar()
@@ -248,6 +249,7 @@ class System_Page:
             remove_wnd.destroy()
             remove_wnd.update()
             self.root.update_widgets()
+            
         remove_wnd.title("Usuń system")
         remove_wnd.minsize(300,100)
         remove_wnd.resizable(width=False, height=False)
@@ -321,7 +323,6 @@ class System_Page:
         button_add.pack(side='top', fill='x', expand=True)
         button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
-        self.root.update_widgets()
 
     #aktualizacja ze zdarzenia dziennika gry
     def update(self, cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict):
