@@ -286,7 +286,7 @@ class System_Page:
             self.db.Update('cmdr_systems', f"star_system = '{sys_name.get()}', group_id = {group_id}", f"star_system = '{self.selected_system}'")
             edit_wnd.destroy()
             edit_wnd.update()
-            self.update_widgets()
+            self.root.update_widgets()
 
         edit_wnd.title("Edytuj system")
         edit_wnd.resizable(width=False, height=False)
