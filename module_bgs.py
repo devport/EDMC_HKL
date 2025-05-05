@@ -85,7 +85,6 @@ class BGS_Page:
   def treeview_OnDoubleClick(self, event):
     #self.tview_selection = self.treeview.selection()
     selected = self.treeview.focus() 
-    print(self.treeview.item(selected)['text'])
     copiedText = (self.treeview.item(selected)['text'])
     r = Tk()
     r.withdraw()
@@ -116,7 +115,6 @@ class BGS_Page:
 
   # -- Grupy
     group_rows = self.db.Select('cmdr_groups', 'id, name', '')
-    print(group_rows)
     groups = []
     if group_rows :
       groups.append("Wszystkie")
@@ -125,8 +123,6 @@ class BGS_Page:
     else:
        groups.append("Wszystkie")
     
-    print("--->> aktualizacja w bgs grup")
-    print(groups)
     self.combobox_current_group.config(values=groups)
     self.combobox_current_group.current(0)
     if self.current_group != None :
@@ -139,7 +135,6 @@ class BGS_Page:
       system_rows = self.db.Select('cmdr_systems', 'system_id, star_system, faction_name, faction_state, influence, scan_time', '')
     if system_rows == None:
       return
-    print(system_rows)
     for system_row in system_rows:
       self.system_id += 1
       #robimy lokalna zmienna z id systemu, nazwa
@@ -184,9 +179,7 @@ class BGS_Page:
     if entry['event'] == 'FSDJump':
 
       check_system_row = self.db.Select('cmdr_systems', 'system_id', f'star_system = "{system}"', True)
-      print('->update system1')
       if check_system_row:
-        print('->update system2')
         #self.db.Update('cmdr_systems', f"faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f"star_system = \"{system}\"")
 
         self.db.Delete('system_factions', f"star_system = \"{system}\"")  
@@ -196,7 +189,6 @@ class BGS_Page:
         #  self.db.Update('cmdr_systems', f"star_system = \"{system}\", faction_name = \"{entry['SystemFaction']['Name']}\", faction_state = \"{entry['SystemFaction']['FactionState']}\", scan_time = {seq+240000}", f" star_system = \"{entry['StarSystem']}\"")
 
         if 'Factions' in entry:
-          print('->update system3')
           for faction in entry['Factions']:
             #aktualizacja danych 
             dt = datetime.datetime.now()

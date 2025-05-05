@@ -18,11 +18,7 @@ class System_Page:
         self.current_system = None
         self.selected_system = None
 
-        print('Init System Page')
-
-
     def app(self, parent):
-        print('System Page : begin app')
         self.parent = parent
         # frames
         frame_group = tk.LabelFrame(self.parent, text="Grupa")
@@ -81,10 +77,8 @@ class System_Page:
         self.treeview_systems.bind("<<TreeviewSelect>>", select_system)
 
         self.update_widgets()
-        print('System Page : end app')
 
     def update_widgets(self):
-        print('System Page : begin update_widgets')
         # frame group
         group_rows = self.db.Select('cmdr_groups', 'id, name', '')
         self.groups = []
@@ -116,11 +110,8 @@ class System_Page:
         if system_rows:
             for system_row in system_rows:
                 self.system_items.append(self.treeview_systems.insert('', index='end', text=system_row[0], values=(system_row[1],)))    
- 
-        print('System Page : end update_widgets')
 
     def window_group_add(self):
-        print('System Page : begin window_group_add')
         new_name = tk.StringVar()
         var_bgs = tk.IntVar()
         var_colonization = tk.IntVar()
@@ -162,17 +153,13 @@ class System_Page:
         button_add.pack(fill='x', expand=True, pady=10)
         button_cancel = tk.Button(frame, text="Anuluj", command=add_wnd.destroy)
         button_cancel.pack(fill='x', expand=True, pady=10)
-        print('System Page : end window_group_add')
     
     def window_group_remove(self):
-        print('System Page : begin window_group_remove')
         self.db.Delete('cmdr_groups', f"name = '{self.combobox_groups.get()}'")
         self.current_group = None
         self.root.update_widgets()
-        print('System Page : end window_group_remove')
 #systems
     def window_system_add(self):
-        print('System Page : begin window_system_add')
         new_name = tk.StringVar()
         if self.current_system:
             new_name.set(self.current_system)
@@ -227,10 +214,8 @@ class System_Page:
         button_add.pack(side='top', fill='x', expand=True)
         button_cancel = tk.Button(frame, text="Anuluj", command=add_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
-        print('System Page : end window_system_add')
 
     def window_system_remove(self):
-        print('System Page : begin window_group_remove')
         remove_wnd = tk.Toplevel(self.parent)
 
         def system_query_remove_yes():
@@ -251,10 +236,8 @@ class System_Page:
         button_remove_yes.pack(side='top', fill='x', expand=True)
         button_remove_no = tk.Button(remove_wnd_frame, text="Nie", command=remove_wnd.destroy)
         button_remove_no.pack(side='top', fill='x', expand=True)
-        print('System Page : end window_group_remove')
 
     def window_system_edit(self):
-        print('System Page : begin window_system_edit')
 
         system_row = self.db.Select('cmdr_systems', 'star_system, group_id', F"star_system = '{self.selected_system}'", True)
         system_group_row = self.db.Select('cmdr_groups', 'name, id', F"id = {system_row[1]}", True)
@@ -312,7 +295,6 @@ class System_Page:
         button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
         self.root.update_widgets()
-        print('System Page : end window_system_edit')
 
     #aktualizacja ze zdarzenia dziennika gry
     def update(self, cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict):

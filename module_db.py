@@ -6,6 +6,8 @@ import logging
 class BGSMini_DB:
   def __init__(self, plugin_dir):
     self.dbfile_name = 'bgsmini.db'
+    self.dbg_mode = False
+
 
     self.dbfile_path = Path(plugin_dir) / self.dbfile_name
     create_table = False
@@ -15,10 +17,6 @@ class BGSMini_DB:
     self.sqlcur = self.sqlconn.cursor()
     if create_table:
       self.CreateTables()
-
-
-  def ShowTest(self):
-    print(f" !! --> Info TEST <-- !!")
 
   def Close(self):
     self.sqlconn.close()
@@ -39,7 +37,7 @@ class BGSMini_DB:
       self.sqlcur.execute("CREATE TABLE markets (market_id INTEGER, name TEXT, star_system TEXT, station_type TEXT)")  
       self.sqlcur.execute("CREATE TABLE market_materials (market_id INTEGER, name TEXT, name_localised TEXT, category TEXT, stock INTEGER, Demand INTEGER, BuyPrice INTEGER, SellPrice INTEGER)")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when CREATE TABLE")
+      if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when CREATE TABLE")
       #logger.exception('sqlite3.OperationalError when CREATE TABLE entries:')
     return
   
@@ -51,9 +49,9 @@ class BGSMini_DB:
       qwhere = "WHERE " + where    
     try:
       self.sqlcur.execute(f"SELECT {what} FROM {table} {qwhere}")
-      print(f" SQL SELECT {what} FROM {table} {qwhere} ")
+      if self.dbg_mode : print(f" SQL SELECT {what} FROM {table} {qwhere} ")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when SELECT {what} FROM {table} {qwhere} ")
+      if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when SELECT {what} FROM {table} {qwhere} ")
     if one == True:
       return self.sqlcur.fetchone()
     else:
@@ -64,9 +62,9 @@ class BGSMini_DB:
     try:
       self.sqlcur.execute(f"INSERT INTO {table}({what}) VALUES ({values})")
       self.sqlconn.commit()
-      print(f" SQL INSERT INTO {table}({what}) VALUES ({values}) ")
+      if self.dbg_mode : print(f" SQL INSERT INTO {table}({what}) VALUES ({values}) ")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when INSERT INTO {table}({what}) VALUES ({values}) ")
+      if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when INSERT INTO {table}({what}) VALUES ({values}) ")
 
   # INSERT INTO table(what) VALUES values WHERE where
   def Update(self, table, values, where):  
@@ -76,9 +74,9 @@ class BGSMini_DB:
     try:
       self.sqlcur.execute(f"UPDATE {table} SET {values} {qwhere}")
       self.sqlconn.commit()
-      print(f" SQL UPDATE {table} SET {values} {qwhere} ")
+      if self.dbg_mode : print(f" SQL UPDATE {table} SET {values} {qwhere} ")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when UPDATE {table} SET {values} {qwhere}")
+      if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when UPDATE {table} SET {values} {qwhere}")
 
   # DELETE FROM table WHERE where
   def Delete(self, table, where) -> bool:  
@@ -88,9 +86,9 @@ class BGSMini_DB:
     try:
       self.sqlcur.execute(f"DELETE FROM {table} {qwhere}")
       self.sqlconn.commit()
-      print(f" SQL DELETE FROM {table} {qwhere} ")
+      if self.dbg_mode : print(f" SQL DELETE FROM {table} {qwhere} ")
     except sqlite3.OperationalError:
-      print(f" !! --> sqlite3.Operational Error when DELETE FROM {table} {qwhere}")
+      if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when DELETE FROM {table} {qwhere}")
       return False
     return True
 
