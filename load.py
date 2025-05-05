@@ -1,13 +1,13 @@
-#!/usr/bin/env python
-# vim: textwidth=0 wrapmargin=0 tabstop=4 shiftwidth=4 softtabstop=4 smartindent smarttab
-
 import logging
+
+from theme import theme
 import tkinter as tk
 from tkinter import ttk
 import sys
-import datetime
-import shutil
-import myNotebook as nb
+#import datetime
+#import shutil
+#import myNotebook as nb
+
 from pathlib import Path
 from modules.module_bgs import BGS_Page
 from modules.module_depot import Depot_Page
@@ -19,11 +19,11 @@ import semantic_version
 
 from config import config, appname, appversion
 
-
 #globalne
 
 this = sys.modules[__name__]
-this.pluginname = 'BGSmini by devport'
+this.dbg_mode = False
+'''this.pluginname = 'BGSmini by devport'
 this.version = 0.1
 this.dbg_mode = False
 this.label_sys_info = tk.Label
@@ -36,29 +36,11 @@ this.userApikey = ''
 this.SquadronName = ''
 this.plugin_dir = ''
 this.config = config
-this.market = type(Market)
+'''
 
 this.tag_fact_color = ''
 this.tag_high_color = ''
 this.tag_low_color = ''
-
-# This could also be returned from plugin_start3()
-plugin_name = Path(__file__).resolve().parent.name
-
-# Logger per found plugin, so the folder name is included in
-# the logging format.
-logger = logging.getLogger(f'{appname}.{plugin_name}')
-if not logger.hasHandlers():
-    level = logging.INFO  # So logger.info(...) is equivalent to print()
-
-    logger.setLevel(level)
-    logger_channel = logging.StreamHandler()
-    logger_channel.setLevel(level)
-    logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d:%(funcName)s: %(message)s')  # noqa: E501
-    logger_formatter.default_time_format = '%Y-%m-%d %H:%M:%S'
-    logger_formatter.default_msec_format = '%s.%03d'
-    logger_channel.setFormatter(logger_formatter)
-    logger.addHandler(logger_channel)
 
 #ladowanie kofiguracji
 this.SquadronName = config.get_str("BGSMini_SquadronName")
@@ -67,13 +49,13 @@ this.tag_high_color = 'pink' if config.get_str("BGSMini_tag_high_color") == "" e
 this.tag_low_color = 'coral' if config.get_str("BGSMini_tag_low_color") == "" else config.get_str("BGSMini_tag_low_color")
 
 #ustawienia widgetow wtyczki (wygladu)
-def plugin_app(parent):
-    this.parent = parent
-    
+def plugin_app(parent):    
     frame = tk.Frame(parent)
     notebook = ttk.Notebook(frame)
+
     notebook.config(width=600, height=550)
     notebook.pack(expand = True, fill ="both")
+
     #main_frame = tk.Frame(notebook, width= 250, height= 200)
     bgs_frame = tk.Frame(notebook)
     depot_frame = tk.Frame(notebook)
@@ -92,7 +74,11 @@ def plugin_app(parent):
     this.bgs.show(bgs_frame)
     this.depot.show(depot_frame)
     this.system.app(system_frame)
-    return (frame)
+
+    theme.update(frame)
+    print(theme.current)
+
+    return frame
 '''
 
     #dane o ekonomii
@@ -116,36 +102,18 @@ def plugin_app(parent):
 '''
 
 #start pluginu
-def plugin_start3(plugin_dir: str) -> str:
+def plugin_start3(plugin_dir):
     """
     Plugin startup method.
 
     :param plugin_dir:
     :return: 'Pretty' name of this plugin.
     """
-    # Up until 5.0.0-beta1 config.appversion is a string
-    if isinstance(appversion, str):
-        core_version = semantic_version.Version(appversion)
-
-    elif callable(appversion):
-        # From 5.0.0-beta1 it's a function, returning semantic_version.Version
-        core_version = appversion()
-
-    logger.info(f'Core EDMC version: {core_version}')
-    # And then compare like this
-    if core_version < semantic_version.Version('5.0.0-beta1'):
-        logger.info('EDMC core version is before 5.0.0-beta1')
-    else:
-        logger.info('EDMC core version is at least 5.0.0-beta1')
-
-    # Yes, just blow up if config.appverison is neither str or callable
-
-    logger.info(f'Folder is {plugin_dir}')
 
     this.plugin_dir = plugin_dir
     this.market = Market(this)
-    this.bgs = BGS_Page(logger, this)
-    this.depot = Depot_Page(logger, this)
+    this.bgs = BGS_Page(this)
+    this.depot = Depot_Page(this)
     this.system = System_Page(this)
 
     #sprawdzam sobie sciezki 
@@ -156,11 +124,11 @@ def plugin_start3(plugin_dir: str) -> str:
         print(config.default_plugin_dir_path)
         print(Path(__file__).resolve().parent)
 
-    return plugin_name
+    return "EDMC_HKL"
 
 
 def plugin_stop() -> None:
-    logger.info('Stopping')
+    print('Stopping')
 
 
 def plugin_prefs(parent, cmdr, is_beta):

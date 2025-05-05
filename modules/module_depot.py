@@ -9,9 +9,8 @@ from modules.module_db import BGSMini_DB
 
 this = sys.modules[__name__]
 class Depot_Page:
-  def __init__(self, logger, root):
+  def __init__(self, root):
     self.plugin_dir = root.plugin_dir
-    self.logger = logger
     self.root = root
     self.config = root.config
     self.check_completed = tk.IntVar()

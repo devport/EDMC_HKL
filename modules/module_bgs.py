@@ -14,9 +14,8 @@ this = sys.modules[__name__]
 
 class BGS_Page:
 
-  def __init__(self, logger, root):
+  def __init__(self, root):
     self.SquadronStartup = ''
-    self.logger = logger
     self.plugin_dir = root.plugin_dir
     self.tview_selection = 0
     self.management_wnd = None
@@ -46,6 +45,7 @@ class BGS_Page:
     self.label_group = tk.Label(self.topframe, text="Grupa : ")
     self.label_group.pack(side="left", expand=False)
     
+
     self.combobox_current_group = ttk.Combobox(self.topframe)
     self.combobox_current_group.pack(side="left", fill="x", expand=True)
     self.combobox_current_group.config(state='readonly')
@@ -65,7 +65,7 @@ class BGS_Page:
     self.label_system = tk.Label(self.mainframe, text="Systemy :", anchor='w')
     self.label_system.pack()
 
-    self.treeview = ttk.Treeview(self.mainframe,columns=('Factions_State', 'Factions_Influence'), show = 'tree', selectmode="browse")
+    self.treeview = ttk.Treeview(self.mainframe, columns=('Factions_State', 'Factions_Influence'), show = 'tree', selectmode="browse")
     self.treeview.pack(side="bottom", expand = True, fill ="both")
     self.treeview.heading('#0', text= 'Nazwa')
     self.treeview.heading('Factions_State', text= 'Stan')
@@ -78,6 +78,7 @@ class BGS_Page:
     self.treeview.tag_configure('high', background='pink')
     self.treeview.tag_configure('low', background='coral')
     self.treeview.bind("<Double-1>", self.treeview_OnDoubleClick)
+
     self.update_widgets() 
 
 #reakcja na podwojne klikniecie w liste systemow

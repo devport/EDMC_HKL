@@ -38,6 +38,8 @@ class System_Page:
         self.combobox_groups.pack(side='left', fill='x', expand=True)
         self.button_group_add = tk.Button(frame_group, text="Dodaj", command=self.window_group_add)
         self.button_group_add.pack(side='left', expand=False)
+        self.button_group_edit = tk.Button(frame_group, text="Edytuj", command=self.window_group_edit)
+        self.button_group_edit.pack(side='left', expand=False)
         self.button_group_remove = tk.Button(frame_group, text="Usuń", command=self.window_group_remove)
         self.button_group_remove.pack(side='left', expand=False)
 
@@ -113,47 +115,71 @@ class System_Page:
 
     def window_group_add(self):
         new_name = tk.StringVar()
-        var_bgs = tk.IntVar()
-        var_colonization = tk.IntVar()
+        add_wnd = tk.Toplevel(self.parent)
 
         def system_management_add():
             if new_name.get() == "":
-                return
-            perm = ''
-            if var_bgs.get() == 1:
-                perm += 'bgs,'
-            if var_colonization.get() == 1:
-                perm += 'colonization,'
-            
-            self.db.Insert('cmdr_groups','name, permission', f"'{new_name.get()}', '{perm[:-1]}' ")
+                return            
+            self.db.Insert('cmdr_groups','name, permission', f"'{new_name.get()}', '' ")
             add_wnd.destroy()
             add_wnd.update()
             self.root.update_widgets()
 
-        add_wnd = tk.Toplevel(self.parent)
+        
         add_wnd.title("Dodaj grupę")
-        add_wnd.geometry("300x150")
+        add_wnd.resizable(width=False, height=False)
+        add_wnd.minsize(300,100)
 
-        frame = ttk.Frame(add_wnd)
+        frame = tk.Frame(add_wnd)
         frame.pack(padx=5, fill='both', expand=True)
 
         system_name_label = tk.Label(frame, text="Nazwa grupy:")
-        system_name_label.pack(fill='x', expand=True)
+        system_name_label.pack(side='top', fill='x', expand=True)
         
         system_name_entry = tk.Entry(frame, textvariable=new_name)
-        system_name_entry.pack(fill='x', expand=True)
+        system_name_entry.pack(side='top', fill='x', expand=True)
         system_name_entry.focus()
 
-        checkbutton_bgs = tk.Checkbutton(frame, text="BGS", variable=var_bgs, onvalue=1, offvalue=0)
-        checkbutton_bgs.pack()
-        checkbutton_colonization = tk.Checkbutton(frame, text="Kolonizacja", variable=var_colonization, onvalue=1, offvalue=0)
-        checkbutton_colonization.pack()
-
-        button_add = tk.Button(frame, text="Dodaj", command=system_management_add, height=40, width= 30)
-        button_add.pack(fill='x', expand=True, pady=10)
+        button_add = tk.Button(frame, text="Dodaj", command=system_management_add)
+        button_add.pack(side='top', fill='x', expand=True)
         button_cancel = tk.Button(frame, text="Anuluj", command=add_wnd.destroy)
-        button_cancel.pack(fill='x', expand=True, pady=10)
+        button_cancel.pack(side='top', fill='x', expand=True)
     
+    def window_group_edit(self):
+        if self.current_group == None:
+            return
+        edit_wnd = tk.Toplevel(self.parent)
+        edit_name = tk.StringVar()
+        system_group_row = self.db.Select('cmdr_groups', 'name', F"id = {self.current_group["id"]}", True)
+        if system_group_row:
+            edit_name.set(system_group_row[0])
+        def window_group_save():
+            if edit_name.get() == "":
+                return            
+            self.db.Update('cmdr_groups',f'name = "{edit_name.get()}"', f'id = "{self.current_group["id"]}"')
+            edit_wnd.destroy()
+            edit_wnd.update()
+            self.root.update_widgets()
+
+        edit_wnd.title("Edytuj grupę")
+        edit_wnd.resizable(width=False, height=False)
+        edit_wnd.minsize(300,100)
+
+        frame = tk.Frame(edit_wnd)
+        frame.pack(padx=5, fill='both', expand=True)
+        
+        group_name_label = tk.Label(frame, text="Nazwa grupy:")
+        group_name_label.pack(side='top', fill='x', expand=True)
+
+        group_name_entry = tk.Entry(frame, textvariable=edit_name)
+        group_name_entry.pack(side='top', fill='x', expand=True)
+        group_name_entry.focus()
+
+        button_add = tk.Button(frame, text="Zapisz", command=window_group_save)
+        button_add.pack(side='top', fill='x', expand=True)
+        button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
+        button_cancel.pack(side='top', fill='x', expand=True)
+
     def window_group_remove(self):
         self.db.Delete('cmdr_groups', f"name = '{self.combobox_groups.get()}'")
         self.current_group = None
@@ -164,8 +190,7 @@ class System_Page:
         if self.current_system:
             new_name.set(self.current_system)
         add_wnd = tk.Toplevel(self.parent)
-        frame = ttk.Frame(add_wnd)
-        combobox_groups = ttk.Combobox(frame)
+        add_wnd.minsize(300,100)
         
         def system_management_add():
             if new_name.get() == "":
@@ -181,10 +206,10 @@ class System_Page:
             self.root.update_widgets()
 
         add_wnd.title("Dodaj system")
-        add_wnd.geometry("300x200")
         add_wnd.resizable(width=False, height=False)
-
+        frame = tk.Frame(add_wnd)
         frame.pack(padx=5, fill='both', expand=True)
+        combobox_groups = ttk.Combobox(frame)
 
         system_name_label = tk.Label(frame, text="Nazwa systemu:")
         system_name_label.pack(side='top', fill='x', expand=True)
@@ -224,9 +249,9 @@ class System_Page:
             remove_wnd.update()
             self.root.update_widgets()
         remove_wnd.title("Usuń system")
-        remove_wnd.geometry("300x120")
+        remove_wnd.minsize(300,100)
         remove_wnd.resizable(width=False, height=False)
-        remove_wnd_frame = ttk.Frame(remove_wnd)
+        remove_wnd_frame = tk.Frame(remove_wnd)
         remove_wnd_frame.pack(padx=5, fill='both', expand=True)
         label_remove_query = tk.Label(remove_wnd_frame, text="Czy napewno chcesz usunąć system:")
         label_remove_query.pack(side='top', fill='x', expand=True)
@@ -238,13 +263,16 @@ class System_Page:
         button_remove_no.pack(side='top', fill='x', expand=True)
 
     def window_system_edit(self):
-
+        if self.select_system == None:
+            return
         system_row = self.db.Select('cmdr_systems', 'star_system, group_id', F"star_system = '{self.selected_system}'", True)
         system_group_row = self.db.Select('cmdr_groups', 'name, id', F"id = {system_row[1]}", True)
         sys_name = tk.StringVar()
         sys_name.set(system_row[0])
         edit_wnd = tk.Toplevel(self.parent)
-        frame = ttk.Frame(edit_wnd)
+        frame = tk.Frame(edit_wnd)
+        edit_wnd.minsize(300,100)
+
         combobox_groups = ttk.Combobox(frame)
         
         def system_management_save():
@@ -261,10 +289,9 @@ class System_Page:
             self.update_widgets()
 
         edit_wnd.title("Edytuj system")
-        edit_wnd.geometry("300x200")
         edit_wnd.resizable(width=False, height=False)
         frame.pack(padx=5, fill='both', expand=True)
-
+    
         system_name_label = tk.Label(frame, text="Nazwa systemu:")
         system_name_label.pack(side='top', fill='x', expand=True)
     
