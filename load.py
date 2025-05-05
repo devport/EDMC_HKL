@@ -9,21 +9,23 @@ import datetime
 import shutil
 import myNotebook as nb
 from pathlib import Path
-from module_bgs import BGS_Page
-from module_depot import Depot_Page
-from module_system import System_Page
+from modules.module_bgs import BGS_Page
+from modules.module_depot import Depot_Page
+from modules.module_system import System_Page
+from modules.module_market import Market
 from tkinter import colorchooser
 
 import semantic_version
 
 from config import config, appname, appversion
 
-from market import Market
 
 #globalne
+
 this = sys.modules[__name__]
 this.pluginname = 'BGSmini by devport'
 this.version = 0.1
+this.dbg_mode = False
 this.label_sys_info = tk.Label
 this.label_station_info = tk.Label
 this.economy_table = ttk.Treeview
@@ -146,19 +148,13 @@ def plugin_start3(plugin_dir: str) -> str:
     this.depot = Depot_Page(logger, this)
     this.system = System_Page(this)
 
-    # test Marketu
-    #this.market.load_journal()
-    #this.market.load(3710784768)
-    #this.market.save()
-    #print(this.market.commodity_names)
-
-
     #sprawdzam sobie sciezki 
-    print(config.plugin_dir_path)
-    print(config.app_dir_path)
-    print(config.internal_plugin_dir_path)
-    print(config.default_plugin_dir_path)
-    print(Path(__file__).resolve().parent)
+    if this.dbg_mode:
+        print(config.plugin_dir_path)
+        print(config.app_dir_path)
+        print(config.internal_plugin_dir_path)
+        print(config.default_plugin_dir_path)
+        print(Path(__file__).resolve().parent)
 
     return plugin_name
 
@@ -211,21 +207,15 @@ def plugin_prefs(parent, cmdr, is_beta):
 
     fact_low_tag_button = nb.Button(frame, text="Wybierz Kolor", command=lambda: choose_color('low'))
     fact_low_tag_button.grid(column= 2, padx=10, row=7, sticky=tk.W)
-
-
-
-
-
     return frame    
+
 def update_widgets():
-    print("-------------------------------------------")
     this.system.update_widgets()
     this.bgs.update_widgets()
     this.depot.update_widgets()
-    print("--------END ------------------------------")
+
 # settings
 def prefs_changed(cmdr, is_beta):
-    print('preffs functiion entry')
     config.set("BGSMini_tag_fact_color", str(this.tag_fact_color))
     config.set("BGSMini_tag_high_color", str(this.tag_high_color))
     config.set("BGSMini_tag_low_color", str(this.tag_low_color))
@@ -250,38 +240,6 @@ def journal_entry(cmdrname: str, is_beta: bool, system: str, station: str, entry
     this.depot.update(cmdrname, is_beta, system, station, entry, state)
 
 
-    #this.market.load()
-    #print(this.market.get_comm())
-
-
-
-    '''
-    if entry['event'] == 'FSDJump':
-        this.label_sys_info['text'] = entry['SystemEconomy_Localised']
-        clear_economy_info()
-        enum = 0
-        for i in  this.table_frac.get_children():
-             this.table_frac.delete(i)
-        for i in entry['Factions']:
-            enum += 1
-            data = (i['Name'], i['FactionState'], str(int(i['Influence'] * 100)) +'%')
-            this.table_frac.insert(parent = '', index = 0, values = data)
-        this.label_frac['text'] = "Frakcje w systemie ( " + str(enum) + ' )'
-
-
-    if entry['event'] == 'Docked':
-        for i in this.economy_table.get_children():
-            this.economy_table.delete(i)
-        this.label_station_info['text'] = entry['StationEconomy_Localised']
-        for j in entry['StationEconomies']:
-            data = (j['Name_Localised'], str(int(j['Proportion'] * 100)) +'%')
-            this.economy_table.insert(parent = '', index = 0, values = data)
-    
-def clear_economy_info():
-    this.label_station_info['text'] = ''
-    for i in this.economy_table.get_children():
-        this.economy_table.delete(i)
-'''
 #{ "timestamp":"2025-04-11T14:44:21Z", "event":"Location", 
 # "DistFromStarLS":17098.307003, 
 # "Docked":false, 
