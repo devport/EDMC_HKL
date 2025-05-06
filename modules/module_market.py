@@ -60,7 +60,8 @@ class Market:
                         'Name'              : str, 
                         'Name_Localised'    : str,
                         'Category'          : str,
-                        'Stock'             : int, 
+                        'Stock'             : int,
+                        'Demand'            : int, 
                         'BuyPrice'          : int,
                         'SellPrice'         : int
                     }
@@ -93,12 +94,13 @@ class Market:
                 if not data: return
 
                 json_data = json.loads(data)
+                items:List = json_data['Items']
+
                 self.name = json_data['StationName']
                 self.id = json_data['MarketID']
                 self.station_type = json_data['StationType']
                 self.star_system = json_data['StarSystem']
-                items:List = json_data['Items']
-
+        
                 for item in items:
                     material  = {
                         'Id'                : int,
@@ -141,9 +143,6 @@ class Market:
 
     def get_commodity_names(self) -> []:
         return self.commodity_names
-
-    def get_commodity(self, name:str) -> Dict | None:
-        return self.commodities[name] | {}
     
     def market_is_new(self):
         return self.new_market

@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# vim: textwidth=0 wrapmargin=0 tabstop=4 shiftwidth=4 softtabstop=4 smartindent smarttab
+
 import logging
 
-from theme import theme
 import tkinter as tk
 from tkinter import ttk
 import sys
@@ -89,8 +91,6 @@ def plugin_app(parent):
     this.depot.show(depot_frame)
     this.system.app(system_frame)
 
-    theme.update(frame)
-    print(theme.current)
 
     return frame
 '''

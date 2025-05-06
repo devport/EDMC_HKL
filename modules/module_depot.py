@@ -160,6 +160,9 @@ class Depot_Page:
     if self.select_object_materials == None:
       return
 
+    if self.select_object == self.current_object:
+      self.select_object_materials = self.current_object_materials
+
     #wyswietlanie listy z object_info
     for material_row in self.select_object_materials:
       m_stock = 0
@@ -309,10 +312,10 @@ class Depot_Page:
     self.combobox_markets.pack(side='left', fill='x', expand=True)
     
     def Select_Market_Combo(event):
-      market_row = self.db.Select('markets', 'name, market_id', f"name = \"{self.combobox_markets.get()}\"", True)
+      market_row = self.db.Select('markets', 'name, market_id, station_type', f"name = \"{self.combobox_markets.get()}\"", True)
       self.select_market = None
       if market_row : 
-        self.select_market = {'StationName' : market_row[0], 'MarketID' : market_row[1]} 
+        self.select_market = {'StationName' : market_row[0], 'MarketID' : market_row[1], 'StationType' :  market_row[2]} 
       self.update_widgets()
     
     self.combobox_markets.bind('<<ComboboxSelected>>', Select_Market_Combo)
@@ -389,6 +392,7 @@ class Depot_Page:
         self.db.Update('system_objects', f"progress = {self.current_object['ConstructionProgress']}", f"market_id ={self.current_object['MarketID']}")
 
       materials = []
+      self.current_object_materials = None
       for material_row in entry['ResourcesRequired'] :
         material = {
             "StarSystem"      : self.current_object['StarSystem'],
