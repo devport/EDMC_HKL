@@ -82,12 +82,19 @@ class Depot_Page:
        
     self.objects = []
     if self.select_system != None:
-      object_rows = self.db.Select('system_objects', 'star_system, stationname, stationname_localised, market_id, progress', f"star_system = \"{self.select_system}\"")
+      object_rows = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', f"star_system = \"{self.select_system}\"")
     else:
-      object_rows = self.db.Select('system_objects', 'star_system, stationname, stationname_localised, market_id, progress', '')
+      object_rows = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', '')
     if object_rows:
       for object_row in object_rows:
         self.objects.append(object_row[1])
+        if self.select_object != None:
+          if self.select_object['StationName'] == object_row[1]:
+            self.select_object = {'StarSystem' : object_row[0],
+            'StationName': object_row[1],
+            'MarketID' : object_row[2],
+            'ConstructionProgress' :  object_row[3] }
+
       self.combobox_objects.config(state='readonly')
     else:
       self.objects.append("Brak")
@@ -157,11 +164,10 @@ class Depot_Page:
       return
 
 # jezeli obecny system istnieje 
+
+    self.load_object_materials(self.select_object['MarketID'] , self.select_object['StarSystem'] )
     if self.select_object_materials == None:
       return
-
-    if self.select_object == self.current_object:
-      self.select_object_materials = self.current_object_materials
 
     #wyswietlanie listy z object_info
     for material_row in self.select_object_materials:
@@ -392,7 +398,6 @@ class Depot_Page:
         self.db.Update('system_objects', f"progress = {self.current_object['ConstructionProgress']}", f"market_id ={self.current_object['MarketID']}")
 
       materials = []
-      self.current_object_materials = None
       for material_row in entry['ResourcesRequired'] :
         material = {
             "StarSystem"      : self.current_object['StarSystem'],
