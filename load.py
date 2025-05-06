@@ -21,6 +21,20 @@ from config import config, appname, appversion
 
 #globalne
 
+plugin_name = Path(__file__).resolve().parent.name
+logger = logging.getLogger(f'{appname}.{plugin_name}')
+if not logger.hasHandlers():
+    level = logging.INFO  # So logger.info(...) is equivalent to print()
+
+    logger.setLevel(level)
+    logger_channel = logging.StreamHandler()
+    logger_channel.setLevel(level)
+    logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d:%(funcName)s: %(message)s')  # noqa: E501
+    logger_formatter.default_time_format = '%Y-%m-%d %H:%M:%S'
+    logger_formatter.default_msec_format = '%s.%03d'
+    logger_channel.setFormatter(logger_formatter)
+    logger.addHandler(logger_channel)
+
 this = sys.modules[__name__]
 this.dbg_mode = False
 '''this.pluginname = 'BGSmini by devport'

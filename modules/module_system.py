@@ -150,13 +150,13 @@ class System_Page:
             return
         edit_wnd = tk.Toplevel(self.parent)
         edit_name = tk.StringVar()
-        system_group_row = self.db.Select('cmdr_groups', 'name', F"id = {self.current_group['id']}", True)
+        system_group_row = self.db.Select('cmdr_groups', 'name', f"id = {self.current_group['id']}", True)
         if system_group_row:
             edit_name.set(system_group_row[0])
         def window_group_save():
             if edit_name.get() == "":
                 return            
-            self.db.Update('cmdr_groups',f'name = "{edit_name.get()}"', f'id = "{self.current_group["id"]}"')
+            self.db.Update('cmdr_groups',f'name = "{edit_name.get()}"', f"id = {self.current_group['id']}")
             edit_wnd.destroy()
             edit_wnd.update()
             self.root.update_widgets()
