@@ -245,7 +245,8 @@ class System_Page:
         remove_wnd = tk.Toplevel(self.parent)
 
         def system_query_remove_yes():
-            self.db.Delete('cmdr_systems', f"star_system = '{self.selected_system}'")
+            self.db.Delete('cmdr_systems', f"UPPER(star_system) = '{self.selected_system.upper()}'")
+            self.db.Delete('system_factions', f"UPPER(star_system) = \"{self.selected_system.upper()}\"")  
             remove_wnd.destroy()
             remove_wnd.update()
             self.root.update_widgets()
@@ -267,7 +268,7 @@ class System_Page:
     def window_system_edit(self):
         if self.selected_system == None:
             return
-        system_row = self.db.Select('cmdr_systems', 'star_system, group_id', F"star_system = '{self.selected_system}'", True)
+        system_row = self.db.Select('cmdr_systems', 'star_system, group_id', F"UPPER(star_system) = '{self.selected_system.upper()}'", True)
         system_group_row = self.db.Select('cmdr_groups', 'name, id', F"id = {system_row[1]}", True)
         sys_name = tk.StringVar()
         sys_name.set(system_row[0])
@@ -285,7 +286,7 @@ class System_Page:
                 group_id = group_id_row[0]
             else:
                 group_id = 'NULL'
-            self.db.Update('cmdr_systems', f"star_system = '{sys_name.get()}', group_id = {group_id}", f"star_system = '{self.selected_system}'")
+            self.db.Update('cmdr_systems', f"star_system = '{sys_name.get()}', group_id = {group_id}", f"UPPER(star_system) = '{self.selected_system.upper()}'")
             edit_wnd.destroy()
             edit_wnd.update()
             self.root.update_widgets()

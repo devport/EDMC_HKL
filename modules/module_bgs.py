@@ -159,7 +159,7 @@ class BGS_Page:
 
       self.system_item.append(self.treeview.insert('', index='end', text=system_row[1], values = (str(system_row[3]), str(round(system_row[4],2))+'%'), image=self.check_img[self.system_id-1], tags=sys_tag))
       #ladowanie frakcji
-      faction_rows = self.db.Select('system_factions', '', f"star_system = \"{system_row[1]}\"")
+      faction_rows = self.db.Select('system_factions', '', f"UPPER(star_system) = \"{system_row[1].upper()}\"")
       if faction_rows:
         for faction_row in faction_rows:
           fact_tag = 'normal'
@@ -178,11 +178,11 @@ class BGS_Page:
   def update(self, cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict):
     if entry['event'] == 'FSDJump':
 
-      check_system_row = self.db.Select('cmdr_systems', 'system_id', f'star_system = "{system}"', True)
+      check_system_row = self.db.Select('cmdr_systems', 'system_id', f'UPPER(star_system) = "{system.upper()}"', True)
       if check_system_row:
         #self.db.Update('cmdr_systems', f"faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f"star_system = \"{system}\"")
 
-        self.db.Delete('system_factions', f"star_system = \"{system}\"")  
+        self.db.Delete('system_factions', f"UPPER(star_system) = \"{system.upper()}\"")  
         #dodaje nowe wpisy  
 
         #if 'SystemFaction' in entry:
@@ -195,7 +195,7 @@ class BGS_Page:
             seq = int(dt.strftime("%Y%m%d%H%M%S"))
             if 'SquadronFaction' in faction:
               if faction["SquadronFaction"] :
-                self.db.Update('cmdr_systems', f"star_system = \"{system}\", faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f" star_system = \"{entry['StarSystem']}\"")
+                self.db.Update('cmdr_systems', f"star_system = \"{system}\", faction_name = \"{faction['Name']}\", faction_state = \"{faction['FactionState']}\", influence = {faction['Influence'] * 100}, scan_time = {seq+240000}", f" UPPER(star_system) = \"{entry['StarSystem'].upper()}\"")
             Happiness_Localised = ''
             if 'Happiness_Localised' in faction:
               Happiness_Localised = faction['Happiness_Localised']

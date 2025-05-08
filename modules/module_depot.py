@@ -82,7 +82,7 @@ class Depot_Page:
        
     self.objects = []
     if self.select_system != None:
-      object_rows = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', f"star_system = \"{self.select_system}\"")
+      object_rows = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', f"UPPER(star_system) = \"{self.select_system.upper()}\"")
     else:
       object_rows = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', '')
     if object_rows:
@@ -212,7 +212,7 @@ class Depot_Page:
     self.combobox_systems.config(state='readonly')
 
     def Select_System_Combo(event):
-      system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = \"{self.combobox_systems.get()}\"", True)
+      system_row = self.db.Select('cmdr_systems', 'star_system', f"UPPER(star_system) = \"{self.combobox_systems.get().upper()}\"", True)
       if system_row:
         self.select_system = self.combobox_systems.get()
       else:
@@ -256,7 +256,7 @@ class Depot_Page:
     
     def Select_Obj_Combo(event):
       if self.select_system != None:
-        object_row = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', f"stationname = '{self.combobox_objects.get()}' AND star_system = '{self.select_system}'", True)
+        object_row = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', f"stationname = '{self.combobox_objects.get()}' AND UPPER(star_system) = '{self.select_system.upper()}'", True)
       else:
         object_row = self.db.Select('system_objects', 'star_system, stationname, market_id, progress', f"stationname = '{self.combobox_objects.get()}' ", True)
 
