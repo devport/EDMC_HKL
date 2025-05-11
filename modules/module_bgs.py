@@ -164,13 +164,14 @@ class BGS_Page:
         for faction_row in faction_rows:
           fact_tag = 'normal'
           #print(faction_row[1].upper() + " == " + system_row[2].upper())
-          if faction_row[1].upper() == system_row[2].upper():
-            if round(faction_row[5],2) > self.high_level :
-              fact_tag = 'high'
-            elif round(faction_row[5],2) < self.low_level:
-              fact_tag = 'low'
-            else:
-              fact_tag = 'faction'
+          if faction_row[1] != None and system_row[2] != None:
+            if faction_row[1].upper() == system_row[2].upper():
+              if round(faction_row[5],2) > self.high_level :
+                fact_tag = 'high'
+              elif round(faction_row[5],2) < self.low_level:
+                fact_tag = 'low'
+              else:
+                fact_tag = 'faction'
           self.faction_item.append(self.treeview.insert(self.system_item[self.system_id-1], 'end',  text= faction_row[1], values = (faction_row[2], str(round(faction_row[5], 2))+'%') , tags=fact_tag))
       
 
