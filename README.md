@@ -35,6 +35,7 @@ Konstrukcje:
 Rynki:
 - Dodawanie, usuwanie rynkow z lokalnej bazy danych
 - Podglad towarow na rynkach i w ładowni statku
+- Opcja wyszukiwania towarow na zapisanych rynkach
 
 Co do zrobienia w dalszej przyszłości:
 - refaktoryzacja kodu
@@ -53,3 +54,4 @@ Wtyczka może zawierać błędy.
 ![Screenshot](screens/construct.png)
 ![Screenshot](screens/systems.png)
 ![Screenshot](screens/markets.png)
+![Screenshot](screens/commodities_search.png)
