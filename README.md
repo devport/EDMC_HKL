@@ -1,9 +1,9 @@
 Próba zrobienia pluginu wspomagającego grę w Elite Dangerous.
 
 Uwaga ! 
-Nie jestem zawodowym programistą.
+Nie jestem zawodowym programistą. Ale dla przyjemności czasami programuję po swojemu.
 
-Wersja alpha 0.1
+Wersja alpha 0.2
 
 Co zostało zrobione:
 
@@ -13,6 +13,7 @@ W Plik/Ustawienia:
 Systemy:
 - Tworzenie grup systemów
 - wykrywanie systemu w którym się znajdujemy
+- zapisywanie systemow do bazy lokalnej
 
 BGS:
 - Obecnie tylko wczytuje frakcje w systemie i wyświetla je na liście
@@ -23,7 +24,7 @@ BGS:
 - wszelkie dane są aktualizowane w momencie zakończenia skoku do systemu
 - ! podwójne kliknięcie myszką zapisuje do schowka nazwę systemu/frakcji z listy
 
-Magazyn:
+Konstrukcje:
 - wybór systemu zawierającego obiekty konstrukcyjne (grupowanie obiektów)
 - wybór obiektu i marketu do podglądu
 - Każde zadokowanie na obiekcie aktualizuje listę materiałów na tym obiekcie o ile został on zapisany 
@@ -31,9 +32,11 @@ Magazyn:
 - aby dodać rynek (Stacji lub FleetCarrier'a) należy wejść do marketu w grze
 - możliwość pokazywania tylko materiałów brakujacych na obiekcie
 
+Rynki:
+- Dodawanie, usuwanie rynkow z lokalnej bazy danych
+- Podglad towarow na rynkach i w ładowni statku
 
-
-Co do zrobienia:
+Co do zrobienia w dalszej przyszłości:
 - refaktoryzacja kodu
 - poprwaianie znanych błędów
 - tryb online umożliwiający współdzielenie danych o obiektach, systemach

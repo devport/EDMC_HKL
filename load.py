@@ -11,13 +11,9 @@ import sys
 #import myNotebook as nb
 
 from pathlib import Path
-from modules.module_bgs import BGS_Page
-from modules.module_depot import Depot_Page
-from modules.module_system import System_Page
-from modules.module_market import Market
 from tkinter import colorchooser
+from app import MyApp
 
-import semantic_version
 
 from config import config, appname, appversion
 
@@ -38,21 +34,7 @@ if not logger.hasHandlers():
     logger.addHandler(logger_channel)
 
 this = sys.modules[__name__]
-this.dbg_mode = False
-'''this.pluginname = 'BGSmini by devport'
-this.version = 0.1
-this.dbg_mode = False
-this.label_sys_info = tk.Label
-this.label_station_info = tk.Label
-this.economy_table = ttk.Treeview
-this.table_frac = ttk.Treeview
-this.label_frac = tk.Label
-this.username = ''
-this.userApikey = ''
-this.SquadronName = ''
-this.plugin_dir = ''
-this.config = config
-'''
+this.app = None
 
 this.tag_fact_color = ''
 this.tag_high_color = ''
@@ -66,77 +48,11 @@ this.tag_low_color = 'coral' if config.get_str("BGSMini_tag_low_color") == "" el
 
 #ustawienia widgetow wtyczki (wygladu)
 def plugin_app(parent):    
-    frame = tk.Frame(parent)
-    notebook = ttk.Notebook(frame)
-
-    notebook.config(width=600, height=550)
-    notebook.pack(expand = True, fill ="both")
-
-    #main_frame = tk.Frame(notebook, width= 250, height= 200)
-    bgs_frame = tk.Frame(notebook)
-    depot_frame = tk.Frame(notebook)
-    system_frame = tk.Frame(notebook)
-
-    #main_frame.pack(expand = True, fill ="both")
-    bgs_frame.pack(expand = True, fill ="both")
-    depot_frame.pack(expand = True, fill ="both")
-    system_frame.pack(expand = True, fill = "both") 
-
-    #notebook.add(main_frame, text ='Main') 
-    notebook.add(bgs_frame, text ='BGS') 
-    notebook.add(depot_frame, text ='Magazyn')
-    notebook.add(system_frame, text ='Systemy')
-
-    this.bgs.show(bgs_frame)
-    this.depot.show(depot_frame)
-    this.system.app(system_frame)
-
-
-    return frame
-'''
-
-    #dane o ekonomii
-    label_sys = tk.Label(frame, text="Ekonomia systemu :", anchor='w')
-    label_sys.grid(row=3, column=0)
-    this.label_sys_info = tk.Label(frame, text="")
-    this.label_sys_info.grid(row=3, column=1)
-    
-    label_station = tk.Label(frame, text="Ekonomia wiodąca obiektu :", anchor='w')
-    label_station.grid(row=4, column=0)
-    this.label_station_info = tk.Label(frame, text="")
-    this.label_station_info.grid(row=4, column=1)
-    
-    this.economy_table = ttk.Treeview(frame, height= 5,columns=('Name_Localised', 'Proportion'), show = 'headings')
-    this.economy_table.grid(row=5, column=0, columnspan=3)
-    this.economy_table.heading('Name_Localised', text= 'Nazwa ekonomii')
-    this.economy_table.heading('Proportion', text= 'Proporcje')
-   
-    return (frame)
-
-'''
+    return this.app.plugin_app(parent)
 
 #start pluginu
 def plugin_start3(plugin_dir):
-    """
-    Plugin startup method.
-
-    :param plugin_dir:
-    :return: 'Pretty' name of this plugin.
-    """
-
-    this.plugin_dir = plugin_dir
-    this.market = Market(this)
-    this.bgs = BGS_Page(this)
-    this.depot = Depot_Page(this)
-    this.system = System_Page(this)
-
-    #sprawdzam sobie sciezki 
-    if this.dbg_mode:
-        print(config.plugin_dir_path)
-        print(config.app_dir_path)
-        print(config.internal_plugin_dir_path)
-        print(config.default_plugin_dir_path)
-        print(Path(__file__).resolve().parent)
+    this.app = MyApp(plugin_dir)
 
     return "EDMC_HKL"
 
@@ -191,11 +107,6 @@ def plugin_prefs(parent, cmdr, is_beta):
     fact_low_tag_button.grid(column= 2, padx=10, row=7, sticky=tk.W)
     return frame    
 
-def update_widgets():
-    this.system.update_widgets()
-    this.bgs.update_widgets()
-    this.depot.update_widgets()
-
 # settings
 def prefs_changed(cmdr, is_beta):
     config.set("BGSMini_tag_fact_color", str(this.tag_fact_color))
@@ -205,22 +116,30 @@ def prefs_changed(cmdr, is_beta):
 
 #czytanie jurnala (zdarzen) i wyciagniecie danych
 def journal_entry(cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict) -> None:
-    logger.debug(
-            f'cmdr = "{cmdrname}", is_beta = "{is_beta}"'
-            f', system = "{system}", station = "{station}"'
-            f', event = "{entry["event"]}"'
-    )
+    this.app.journal_entry(cmdrname, is_beta, system, station, entry, state)
+
+
+'''
+
+    #dane o ekonomii
+    label_sys = tk.Label(frame, text="Ekonomia systemu :", anchor='w')
+    label_sys.grid(row=3, column=0)
+    this.label_sys_info = tk.Label(frame, text="")
+    this.label_sys_info.grid(row=3, column=1)
     
-    if entry['event'] == 'SquadronStartup':
-        if entry['SquadronName'] != '':
-            this.SquadronName = entry['SquadronName']
-            config.set("BGSMini_SquadronName", this.SquadronName)
+    label_station = tk.Label(frame, text="Ekonomia wiodąca obiektu :", anchor='w')
+    label_station.grid(row=4, column=0)
+    this.label_station_info = tk.Label(frame, text="")
+    this.label_station_info.grid(row=4, column=1)
+    
+    this.economy_table = ttk.Treeview(frame, height= 5,columns=('Name_Localised', 'Proportion'), show = 'headings')
+    this.economy_table.grid(row=5, column=0, columnspan=3)
+    this.economy_table.heading('Name_Localised', text= 'Nazwa ekonomii')
+    this.economy_table.heading('Proportion', text= 'Proporcje')
+   
+    return (frame)
 
-    this.system.update(cmdrname, is_beta, system, station, entry, state)
-    this.market.update(cmdrname, is_beta, system, station, entry, state)
-    this.bgs.update(cmdrname, is_beta, system, station, entry, state)
-    this.depot.update(cmdrname, is_beta, system, station, entry, state)
-
+'''
 
 #{ "timestamp":"2025-04-11T14:44:21Z", "event":"Location", 
 # "DistFromStarLS":17098.307003, 

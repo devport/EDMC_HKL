@@ -4,17 +4,17 @@ import tkinter as tk
 import sys
 from tkinter import ttk
 from pathlib import Path
-from modules.module_db import BGSMini_DB
+from modules.db import BGSMini_DB
 
+dbg_mode = True
 
-this = sys.modules[__name__]
-class Depot_Page:
-  def __init__(self, root):
-    self.plugin_dir = root.plugin_dir
-    self.root = root
-    self.config = root.config
+class Construct_Page:
+  def __init__(self, parent):
+    #podstawa kazdej klasy
+    self.app = parent
+    self.db = self.app.db
+
     self.check_completed = tk.IntVar()
-    self.db = BGSMini_DB(root.plugin_dir)
     #nowe
     self.select_system = None
     self.systems = []     #nazwy systemow dla combobox
@@ -72,12 +72,12 @@ class Depot_Page:
     if self.select_system != None :
       self.combobox_systems.set(self.select_system)
 
-
-    print("-> select system : " + str(self.select_system))
-    print("-> current object : " + str(self.current_object))
-    print("-> select object : " + str(self.select_object))
-    print("-> current market : " + str(self.current_market))
-    print("-> select market : " + str(self.select_market))
+    if dbg_mode :
+      print("-> select system : " + str(self.select_system))
+      print("-> current object : " + str(self.current_object))
+      print("-> select object : " + str(self.select_object))
+      print("-> current market : " + str(self.current_market))
+      print("-> select market : " + str(self.select_market))
     #---wczytanie listy obiektow -----------------------------------------------------------------------------
        
     self.objects = []
@@ -291,9 +291,9 @@ class Depot_Page:
 
     def current_market_add():
       if self.current_market != None :
-        self.root.market.load_journal()
+        self.app.market.load_journal()
         self.select_market = self.current_market
-        self.root.market.save()
+        self.app.market.save()
         self.update_widgets()
 
     self.button_current_market_add = tk.Button(frame_market_frame1, text="Dodaj", command=current_market_add)
@@ -301,8 +301,8 @@ class Depot_Page:
 
     def current_market_show():
       if self.current_market != None:
-        self.root.market.load_journal()
-        self.current_market_materials = self.root.market.get_commodity_names() 
+        self.app.market.load_journal()
+        self.current_market_materials = self.app.market.get_commodity_names() 
         self.select_market = self.current_market
         self.select_market_materials = self.current_market_materials 
         self.update_widgets()

@@ -5,12 +5,13 @@ from tkinter import ttk
 from pathlib import Path
 import logging
 
-from modules.module_db import BGSMini_DB
+from modules.db import BGSMini_DB
 
 class System_Page:
-    def __init__(self, root):
-        self.root = root
-        self.db = BGSMini_DB(root.plugin_dir)
+    def __init__(self, parent):
+        #podstawa kazdej klasy
+        self.app = parent
+        self.db = self.app.db
 
         self.groups = []
         self.current_group = None 
@@ -18,7 +19,7 @@ class System_Page:
         self.current_system = None
         self.selected_system = None
 
-    def app(self, parent):
+    def show(self, parent):
         self.parent = parent
         # frames
         frame_group = tk.LabelFrame(self.parent, text="Grupa")
@@ -123,7 +124,7 @@ class System_Page:
             self.db.Insert('cmdr_groups','name, permission', f"'{new_name.get()}', '' ")
             add_wnd.destroy()
             add_wnd.update()
-            self.root.update_widgets()
+            self.app.update_widgets()
 
         
         add_wnd.title("Dodaj grupę")
@@ -159,7 +160,7 @@ class System_Page:
             self.db.Update('cmdr_groups',f'name = "{edit_name.get()}"', f"id = {self.current_group['id']}")
             edit_wnd.destroy()
             edit_wnd.update()
-            self.root.update_widgets()
+            self.app.update_widgets()
 
         edit_wnd.title("Edytuj grupę")
         edit_wnd.resizable(width=False, height=False)
@@ -183,7 +184,7 @@ class System_Page:
     def window_group_remove(self):
         self.db.Delete('cmdr_groups', f"name = '{self.combobox_groups.get()}'")
         self.current_group = None
-        self.root.update_widgets()
+        self.app.update_widgets()
 
 #systems
     def window_system_add(self):
@@ -204,7 +205,7 @@ class System_Page:
             self.db.Insert('cmdr_systems','star_system, group_id', f"'{new_name.get()}', {group_id}")
             add_wnd.destroy()
             add_wnd.update()
-            self.root.update_widgets()
+            self.app.update_widgets()
 
         add_wnd.title("Dodaj system")
         add_wnd.resizable(width=False, height=False)
@@ -249,7 +250,7 @@ class System_Page:
             self.db.Delete('system_factions', f"UPPER(star_system) = \"{self.selected_system.upper()}\"")  
             remove_wnd.destroy()
             remove_wnd.update()
-            self.root.update_widgets()
+            self.app.update_widgets()
             
         remove_wnd.title("Usuń system")
         remove_wnd.minsize(300,100)
@@ -289,7 +290,7 @@ class System_Page:
             self.db.Update('cmdr_systems', f"star_system = '{sys_name.get()}', group_id = {group_id}", f"UPPER(star_system) = '{self.selected_system.upper()}'")
             edit_wnd.destroy()
             edit_wnd.update()
-            self.root.update_widgets()
+            self.app.update_widgets()
 
         edit_wnd.title("Edytuj system")
         edit_wnd.resizable(width=False, height=False)

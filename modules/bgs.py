@@ -7,24 +7,27 @@ from pathlib import Path
 import datetime
 from config import config
 
-from modules.module_db import BGSMini_DB
+from modules.db import BGSMini_DB
 
 this = sys.modules[__name__]
 
 
 class BGS_Page:
 
-  def __init__(self, root):
+  def __init__(self, parent):
+    #podstawa kazdej klasy
+    self.app = parent
+    self.db = self.app.db
+    self.plugin_dir = parent.plugin_dir
+    
     self.SquadronStartup = ''
-    self.plugin_dir = root.plugin_dir
     self.tview_selection = 0
     self.management_wnd = None
     self.systems = []
     self.high_level = 60
     self.low_level = 40
-    self.config = root.config
-    self.db = BGSMini_DB(root.plugin_dir)
-    self.root = root
+    #self.config = root.config
+
     self.groups = []
     self.current_group = None
     
