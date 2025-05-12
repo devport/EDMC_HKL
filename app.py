@@ -76,11 +76,6 @@ class MyApp:
             f', system = "{system}", station = "{station}"'
             f', event = "{entry["event"]}"'
         )'''
-    
-        if entry['event'] == 'SquadronStartup':
-            if entry['SquadronName'] != '':
-                self.SquadronName = entry['SquadronName']
-                config.set("BGSMini_SquadronName", self.SquadronName)
 
         self.system.update(cmdrname, is_beta, system, station, entry, state)
         self.market.update(cmdrname, is_beta, system, station, entry, state)

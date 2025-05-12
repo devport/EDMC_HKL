@@ -8,7 +8,7 @@ from tkinter import ttk
 import sys
 #import datetime
 #import shutil
-#import myNotebook as nb
+import myNotebook as nb
 
 from pathlib import Path
 from tkinter import colorchooser
@@ -40,11 +40,17 @@ this.tag_fact_color = ''
 this.tag_high_color = ''
 this.tag_low_color = ''
 
+#this.fact_high_level = 60
+#this.fact_low_level = 40
+
 #ladowanie kofiguracji
-this.SquadronName = config.get_str("BGSMini_SquadronName")
-this.tag_fact_color = 'palegreen' if config.get_str("BGSMini_tag_fact_color") == "" else config.get_str("BGSMini_tag_fact_color")
-this.tag_high_color = 'pink' if config.get_str("BGSMini_tag_high_color") == "" else config.get_str("BGSMini_tag_high_color")
-this.tag_low_color = 'coral' if config.get_str("BGSMini_tag_low_color") == "" else config.get_str("BGSMini_tag_low_color")
+this.SquadronName = config.get_str("EDMC_HKL_SquadronName")
+this.tag_fact_color = 'palegreen' if config.get_str("EDMC_HKL_tag_fact_color") == "" else config.get_str("EDMC_HKL_tag_fact_color")
+this.tag_high_color = 'pink' if config.get_str("EDMC_HKL_tag_high_color") == "" else config.get_str("EDMC_HKL_tag_high_color")
+this.tag_low_color = 'coral' if config.get_str("EDMC_HKL_tag_low_color") == "" else config.get_str("EDMC_HKL_tag_low_color")
+
+this.fact_high_level = tk.IntVar(value=60 if config.get_int("EDMC_HKL_tag_high_level") == 0 else config.get_int("EDMC_HKL_tag_high_level")) 
+this.fact_low_level = tk.IntVar(value=40 if config.get_int("EDMC_HKL_tag_low_level") == 0 else config.get_int("EDMC_HKL_tag_low_level"))
 
 #ustawienia widgetow wtyczki (wygladu)
 def plugin_app(parent):    
@@ -80,9 +86,21 @@ def plugin_prefs(parent, cmdr, is_beta):
     if this.tag_high_color != 'None' : fact_high_tag_label.config(bg=this.tag_high_color)
     fact_high_tag_label.grid(column= 1,padx=10, row=6, sticky=tk.W)
 
+    fact_high_tag_label1 = nb.Label(frame, text="Poziom frakcji wysoki:")
+    fact_high_tag_label1.grid(column= 3,padx=10, row=6, sticky=tk.W)
+
+    fact_high_tag_entry = tk.Spinbox(frame, from_= 0, to = 100, width=50, increment=1, textvariable=this.fact_high_level)
+    fact_high_tag_entry.grid(column=4, padx=10, row=6, sticky=tk.EW)
+
     fact_low_tag_label = nb.Label(frame, text="Kolor frakcji niski:")
     if this.tag_low_color != 'None' : fact_low_tag_label.config(bg=this.tag_low_color)
     fact_low_tag_label.grid(column= 1,padx=10, row=7, sticky=tk.W)
+
+    fact_low_tag_label1 = nb.Label(frame, text="Poziom frakcji niski:")
+    fact_low_tag_label1.grid(column= 3,padx=10, row=7, sticky=tk.W)
+
+    fact_low_tag_entry = tk.Spinbox(frame, from_= 0, to = 100, width=50, increment=1, textvariable=this.fact_low_level)
+    fact_low_tag_entry.grid(column=4, padx=10, row=7, sticky=tk.EW)
 
     def choose_color(tag_name):
         match tag_name:
@@ -109,13 +127,21 @@ def plugin_prefs(parent, cmdr, is_beta):
 
 # settings
 def prefs_changed(cmdr, is_beta):
-    config.set("BGSMini_tag_fact_color", str(this.tag_fact_color))
-    config.set("BGSMini_tag_high_color", str(this.tag_high_color))
-    config.set("BGSMini_tag_low_color", str(this.tag_low_color))
-    this.bgs.update_widgets()
+    config.set("EDMC_HKL_tag_fact_color", str(this.tag_fact_color))
+    config.set("EDMC_HKL_tag_high_color", str(this.tag_high_color))
+    config.set("EDMC_HKL_tag_low_color", str(this.tag_low_color))
+
+    config.set("EDMC_HKL_tag_high_level", int(this.fact_high_level.get()))
+    config.set("EDMC_HKL_tag_low_level", int(this.fact_low_level.get()))
+
+    this.app.update_widgets()
 
 #czytanie jurnala (zdarzen) i wyciagniecie danych
 def journal_entry(cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict) -> None:
+    if entry['event'] == 'SquadronStartup':
+            if entry['SquadronName'] != '':
+                this.SquadronName = entry['SquadronName']
+                config.set("EDMC_HKL_SquadronName", self.SquadronName)
     this.app.journal_entry(cmdrname, is_beta, system, station, entry, state)
 
 

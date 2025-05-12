@@ -98,12 +98,16 @@ class BGS_Page:
 
 #aktualizacja zawartosci widgetow
   def update_widgets(self):
-    if config.get_str("BGSMini_tag_fact_color") != "None" :
-      self.treeview.tag_configure('faction', background=config.get_str("BGSMini_tag_fact_color"))
-    if config.get_str("BGSMini_tag_high_color") != "None" :
-      self.treeview.tag_configure('high', background=config.get_str("BGSMini_tag_high_color"))
-    if config.get_str("BGSMini_tag_low_color") != "None" :
-      self.treeview.tag_configure('low', background=config.get_str("BGSMini_tag_low_color"))
+    if config.get_str("EDMC_HKL_tag_fact_color") != "None" :
+      self.treeview.tag_configure('faction', background=config.get_str("EDMC_HKL_tag_fact_color"))
+    if config.get_str("EDMC_HKL_tag_high_color") != "None" :
+      self.treeview.tag_configure('high', background=config.get_str("EDMC_HKL_tag_high_color"))
+    if config.get_str("EDMC_HKL_tag_low_color") != "None" :
+      self.treeview.tag_configure('low', background=config.get_str("EDMC_HKL_tag_low_color"))
+    self.high_level = 60 if config.get_int("EDMC_HKL_tag_high_level") == 0 else config.get_int("EDMC_HKL_tag_high_level")
+    self.low_level = 40 if config.get_int("EDMC_HKL_tag_low_level") == 0 else config.get_int("EDMC_HKL_tag_low_level")
+
+
     #main widgets
     for i in self.treeview.get_children():
       self.treeview.delete(i)
