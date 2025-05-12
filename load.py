@@ -46,8 +46,8 @@ this.tag_low_color = ''
 #ladowanie kofiguracji
 this.SquadronName = config.get_str("EDMC_HKL_SquadronName")
 this.tag_fact_color = 'palegreen' if config.get_str("EDMC_HKL_tag_fact_color") == "None" else config.get_str("EDMC_HKL_tag_fact_color")
-this.tag_high_color = 'pink' if config.get_str("EDMC_HKL_tag_high_color") == "None" else config.get_str("EDMC_HKL_tag_high_color")
-this.tag_low_color = 'coral' if config.get_str("EDMC_HKL_tag_low_color") == "None" else config.get_str("EDMC_HKL_tag_low_color")
+this.tag_high_color = '#d9d9d9' if config.get_str("EDMC_HKL_tag_high_color") == "None" else config.get_str("EDMC_HKL_tag_high_color")
+this.tag_low_color = '#aee3d9' if config.get_str("EDMC_HKL_tag_low_color") == "None" else config.get_str("EDMC_HKL_tag_low_color")
 
 this.fact_high_level = tk.IntVar(value=60 if config.get_int("EDMC_HKL_tag_high_level") == 0 else config.get_int("EDMC_HKL_tag_high_level")) 
 this.fact_low_level = tk.IntVar(value=40 if config.get_int("EDMC_HKL_tag_low_level") == 0 else config.get_int("EDMC_HKL_tag_low_level"))
@@ -105,13 +105,13 @@ def plugin_prefs(parent, cmdr, is_beta):
     def choose_color(tag_name):
         match tag_name:
             case 'faction':
-                this.tag_fact_color = colorchooser.askcolor(title ="Wybierz kolor")[1]
+                this.tag_fact_color = colorchooser.askcolor(title ="Wybierz kolor", initialcolor=this.tag_fact_color)[1]
                 fact_faction_tag_label.config(bg=this.tag_fact_color)
             case 'high':
-                this.tag_high_color = colorchooser.askcolor(title ="Wybierz kolor")[1]
+                this.tag_high_color = colorchooser.askcolor(title ="Wybierz kolor", initialcolor=this.tag_high_color)[1]
                 fact_high_tag_label.config(bg=this.tag_high_color)
             case 'low':
-                this.tag_low_color = colorchooser.askcolor(title ="Wybierz kolor")[1]
+                this.tag_low_color = colorchooser.askcolor(title ="Wybierz kolor", initialcolor=this.tag_low_color)[1]
                 fact_low_tag_label.config(bg=this.tag_low_color)
 
 
@@ -131,8 +131,8 @@ def prefs_changed(cmdr, is_beta):
     config.set("EDMC_HKL_tag_high_color", str(this.tag_high_color))
     config.set("EDMC_HKL_tag_low_color", str(this.tag_low_color))
 
-    config.set("EDMC_HKL_tag_high_level", int(this.fact_high_level.get()))
-    config.set("EDMC_HKL_tag_low_level", int(this.fact_low_level.get()))
+    config.set("EDMC_HKL_tag_high_level", this.fact_high_level.get())
+    config.set("EDMC_HKL_tag_low_level", this.fact_low_level.get())
 
     this.app.update_widgets()
 
