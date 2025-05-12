@@ -10,7 +10,7 @@ from config import config, appname, appversion
 from pathlib import Path
 
 class MyApp:
-    dbg_mode = True
+    dbg_mode = False
     db = None
     market = None
 

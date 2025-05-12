@@ -11,7 +11,7 @@ from modules.db import BGSMini_DB
 FILENAME_MARKET = "Market.json"
 FILENAME_CARGO = "Cargo.json"
 
-dbg_mode = True
+dbg_mode = False
 
 class Market_Page:
     label_current_market = None
