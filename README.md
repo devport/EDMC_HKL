@@ -50,7 +50,6 @@ Wtyczka może zawierać błędy.
 
 
 ![Screenshot](screens/bgs.png)
-
-![Screenshot](screens/depot.png)
-
+![Screenshot](screens/construct.png)
 ![Screenshot](screens/systems.png)
+![Screenshot](screens/markets.png)
