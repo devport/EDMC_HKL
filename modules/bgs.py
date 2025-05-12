@@ -89,6 +89,7 @@ class BGS_Page:
     #self.tview_selection = self.treeview.selection()
     selected = self.treeview.focus() 
     copiedText = (self.treeview.item(selected)['text'])
+    print(copiedText)
     r = Tk()
     r.withdraw()
     r.clipboard_clear()

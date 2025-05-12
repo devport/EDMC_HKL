@@ -3,6 +3,7 @@ from os.path import join
 from typing import Dict, List
 
 import tkinter as tk
+from tkinter import Tk
 from tkinter import ttk
 
 from config import config
@@ -53,7 +54,6 @@ class Market_Page:
 
     #glowna ramka modulu (glowna zakladka)
     def show(self, parent):
-        material_name = tk.StringVar()
         self.parent = parent
     
         #Commodities
@@ -116,9 +116,19 @@ class Market_Page:
         self.button_select_market_delete = tk.Button(child_frame2, text="Usuń", command=market_delete)
         self.button_select_market_delete.pack(side='left', expand=False)
 
-
+        #----------------------------------------------------------------------------------------------------------------------------------------------------
         def update_check():
             self.update_widgets()
+
+        def treeview_OnDoubleClick(event):
+            selected = self.treeview_commodities.focus() 
+            copiedText = self.treeview_commodities.item(selected)['text']
+            print(copiedText)
+            r = Tk()
+            r.withdraw()
+            r.clipboard_clear()
+            r.clipboard_append(copiedText)
+            r.destroy()
 
         self.checkbutton_demand = tk.Checkbutton(child_frame3, text='Pokaż skup', variable=self.check_demand, onvalue=1, offvalue=0, command=update_check)
         self.checkbutton_demand.pack(side='left', anchor='w')
@@ -126,6 +136,8 @@ class Market_Page:
         self.checkbutton_stock = tk.Checkbutton(child_frame3, text='Pokaż sprzedaż', variable=self.check_stock, onvalue=1, offvalue=0, command=update_check)
         self.checkbutton_stock.pack(side='left', anchor='w')
         self.checkbutton_stock.flash()
+        button_commodities_search = tk.Button(child_frame3, text="Szukaj", command=self.commodities_search)
+        button_commodities_search.pack(side='right', expand=False)
 
         self.treeview_commodities = ttk.Treeview(child_frame31, columns=('Stock', 'Demand', 'Cargo'))
         self.treeview_commodities.heading('#0', text= 'Nazwa')
@@ -138,6 +150,7 @@ class Market_Page:
         self.treeview_commodities.column('Cargo', minwidth=30, width=30)
         self.treeview_commodities.tag_configure('cargo', background='palegreen1')
         self.treeview_commodities.pack(fill ="both", expand = True)
+        self.treeview_commodities.bind("<Double-1>", treeview_OnDoubleClick)
 
         self.update_widgets()
 
@@ -200,7 +213,58 @@ class Market_Page:
                         self.treeview_commodities.insert('', 'end', text=material_row[1], values=(material_row[2], material_row[3], cargo))
 
                
-    
+    def commodities_search(self):
+        material_name = tk.StringVar()
+        search_wnd = tk.Toplevel(self.parent)
+        commodities_frame = tk.Frame(search_wnd)
+        treeview_commodities = ttk.Treeview(commodities_frame, columns=('Star_System','Station_Type', 'Stock','BuyPrice', 'SellPrice'))
+
+        def close():
+            search_wnd.destroy()
+            search_wnd.update()
+        
+        def search(event):
+            commodities_rows = self.db.Select('market_materials mm JOIN markets m ON mm.market_id = m.market_id','m.name AS market_name, m.star_system, m.station_type, mm.stock, mm.BuyPrice, mm.SellPrice', f"UPPER(mm.name) LIKE '%{commoditie_name_entry.get().upper()}%'")
+            if commodities_rows:
+                for i in treeview_commodities.get_children():
+                    treeview_commodities.delete(i)
+                #('Wagner Station', 'Thrite', 'Coriolis', 0, 0, 857)
+                for commodities_row in commodities_rows:
+                    treeview_commodities.insert('', 'end', text=commodities_row[0], values=(commodities_row[1], commodities_row[2], commodities_row[3], commodities_row[4], commodities_row[5]))
+
+        def treeview_OnDoubleClick(event):
+            selected = treeview_commodities.focus() 
+            copiedText = treeview_commodities.item(selected)['text']
+            print(copiedText)
+            r = Tk()
+            r.withdraw()
+            r.clipboard_clear()
+            r.clipboard_append(copiedText)
+            r.destroy()
+
+        search_wnd.minsize(400,500)
+        search_wnd.title("Szukaj towaru")
+        search_wnd.resizable(width=False, height=False)
+        label_commoditie_title = tk.Label(search_wnd, text="Nazwa towaru :", anchor='w')
+        label_commoditie_title.pack(padx=5, side='top', fill='x')
+        frame = tk.Frame(search_wnd)
+        frame.pack(padx=5, side='top', fill='x')
+        commoditie_name_entry = tk.Entry(frame, textvariable=material_name)
+        commoditie_name_entry.pack(side='left', fill='x', expand=True)
+        commoditie_name_entry.focus()
+        self.button_select_market_delete = tk.Button(frame, text="Zamknij", command=close)
+        self.button_select_market_delete.pack(side='right')
+        commodities_frame.pack(padx=5, fill='both', expand = True)
+        
+        treeview_commodities.heading('#0', text= 'Nazwa stacji')
+        treeview_commodities.heading('Star_System', text= 'System')
+        treeview_commodities.heading('Station_Type', text= 'Typ Stacji')
+        treeview_commodities.heading('Stock', text= 'Stan')
+        treeview_commodities.heading('BuyPrice', text= 'Cena kupna')
+        treeview_commodities.heading('SellPrice', text= 'Cena sprzedazy')
+        treeview_commodities.pack(fill ="both", expand = True)
+        treeview_commodities.bind("<Double-1>", treeview_OnDoubleClick)
+        search_wnd.bind("<Key>", search)
 
 
     def create_table(self):

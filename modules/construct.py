@@ -6,7 +6,7 @@ from tkinter import ttk
 from pathlib import Path
 from modules.db import BGSMini_DB
 
-dbg_mode = True
+dbg_mode = False
 
 class Construct_Page:
   def __init__(self, parent):
@@ -272,11 +272,12 @@ class Construct_Page:
     self.combobox_objects.bind('<<ComboboxSelected>>', Select_Obj_Combo)
 
     def select_object_remove():
-      self.db.Delete('system_objects', f"stationname = \"{self.select_object['StationName']}\" AND market_id = {self.select_object['MarketID']}")
-      self.db.Delete('object_materials', f"market_id = {self.select_object['MarketID']}")
-      self.select_object = None
-      self.select_object_materials = None
-      self.update_widgets()
+      if self.select_object != None :
+        self.db.Delete('system_objects', f"stationname = \"{self.select_object['StationName']}\" AND market_id = {self.select_object['MarketID']}")
+        self.db.Delete('object_materials', f"market_id = {self.select_object['MarketID']}")
+        self.select_object = None
+        self.select_object_materials = None
+        self.update_widgets()
 
     button_object_del = tk.Button(frame_object_frame2, text="Usuń", command=select_object_remove)
     button_object_del.pack(side='left', expand=False)
