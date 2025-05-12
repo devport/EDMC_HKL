@@ -45,9 +45,9 @@ this.tag_low_color = ''
 
 #ladowanie kofiguracji
 this.SquadronName = config.get_str("EDMC_HKL_SquadronName")
-this.tag_fact_color = 'palegreen' if config.get_str("EDMC_HKL_tag_fact_color") == "" else config.get_str("EDMC_HKL_tag_fact_color")
-this.tag_high_color = 'pink' if config.get_str("EDMC_HKL_tag_high_color") == "" else config.get_str("EDMC_HKL_tag_high_color")
-this.tag_low_color = 'coral' if config.get_str("EDMC_HKL_tag_low_color") == "" else config.get_str("EDMC_HKL_tag_low_color")
+this.tag_fact_color = 'palegreen' if config.get_str("EDMC_HKL_tag_fact_color") == "None" else config.get_str("EDMC_HKL_tag_fact_color")
+this.tag_high_color = 'pink' if config.get_str("EDMC_HKL_tag_high_color") == "None" else config.get_str("EDMC_HKL_tag_high_color")
+this.tag_low_color = 'coral' if config.get_str("EDMC_HKL_tag_low_color") == "None" else config.get_str("EDMC_HKL_tag_low_color")
 
 this.fact_high_level = tk.IntVar(value=60 if config.get_int("EDMC_HKL_tag_high_level") == 0 else config.get_int("EDMC_HKL_tag_high_level")) 
 this.fact_low_level = tk.IntVar(value=40 if config.get_int("EDMC_HKL_tag_low_level") == 0 else config.get_int("EDMC_HKL_tag_low_level"))
