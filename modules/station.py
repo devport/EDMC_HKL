@@ -42,7 +42,7 @@ class Station_Page:
         self.combobox_groups.config(state='readonly')
 
         def Select_Group_Combo(event):
-            group_row = self.db.Select('cmdr_groups', 'id, name', f"name = '{self.combobox_groups.get()}' ", True)
+            group_row = self.db.Select('cmdr_groups', 'id, name', f"name = \"{self.combobox_groups.get()}\" ", True)
             if group_row:
                 self.select_group = {"id" : group_row[0], "name" :group_row[1]}
                 self.update_widgets()
@@ -56,7 +56,7 @@ class Station_Page:
         self.combobox_systems.config(state='readonly')
 
         def Select_System_Combo(event):
-            system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = '{self.combobox_systems.get()}' ", True)
+            system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = \"{self.combobox_systems.get()}\" ", True)
             if system_row:
                 self.select_system = {"star_system" :system_row[0]}
                 self.update_widgets()
@@ -70,7 +70,7 @@ class Station_Page:
         self.combobox_stations.config(state='readonly')
 
         def Select_Station_Combo(event):
-            station_row = self.db.Select('stations', '*', f"StationName = '{self.combobox_stations.get()}' ", True)
+            station_row = self.db.Select('stations', '*', f"StationName = \"{self.combobox_stations.get()}\" ", True)
             if station_row:
                 # StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, 
                 # StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads
@@ -187,7 +187,7 @@ class Station_Page:
         # StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, 
         # StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads
         if self.select_system != None:
-            station_rows = self.db.Select('stations', 'StationName', f"StarSystem = '{self.select_system['star_system']}'")
+            station_rows = self.db.Select('stations', 'StationName', f"StarSystem = \"{self.select_system['star_system']}\"")
         else:
             station_rows = self.db.Select('stations', 'StationName', '')
 
@@ -232,9 +232,9 @@ class Station_Page:
         system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = '{system}' ", True)
         if system_row:
             if entry.get("event") == "Docked":
-                station_object = self.db.Select('stations', '*', f"StarSystem = '{entry.get("StarSystem")}' AND StationName = '{entry.get("StationName")}'", True)
+                station_object = self.db.Select('stations', '*', f"UPPER(StarSystem) = \"{entry.get("StarSystem").upper()}\" AND UPPER(StationName) = \"{entry.get("StationName").upper()}\"", True)
                 if station_object : 
-                    self.db.Delete('stations', f"StarSystem = '{entry.get("StarSystem")}' AND StationName = '{entry.get("StationName")}'")
+                    self.db.Delete('stations', f"UPPER(StarSystem) = \"{entry.get("StarSystem").upper()}\" AND UPPER(StationName) = \"{entry.get("StationName").upper()}\"")
                 
                 self.db.Insert('stations', 'StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads', 
                         f"\"{entry.get("StarSystem")}\", {entry.get("SystemAddress")}, \"{entry.get("StationName")}\", \"{entry.get("StationType")}\", {entry.get('MarketID')}, {entry.get("DistFromStarLS")}, \"{entry.get("StationFaction")}\", \"{entry.get("StationGovernment")}\", \"{entry.get("StationGovernment_Localised")}\", \"{entry.get("StationEconomy")}\", \"{entry.get("StationEconomy_Localised")}\", \"{entry.get("StationEconomies")}\", \"{entry.get("LandingPads")}\" ")
