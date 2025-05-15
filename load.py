@@ -14,7 +14,6 @@ from pathlib import Path
 from tkinter import colorchooser
 from app import MyApp
 
-
 from config import config, appname, appversion
 
 #globalne
@@ -53,7 +52,7 @@ this.fact_high_level = tk.IntVar(value=60 if config.get_int("EDMC_HKL_tag_high_l
 this.fact_low_level = tk.IntVar(value=40 if config.get_int("EDMC_HKL_tag_low_level") == 0 else config.get_int("EDMC_HKL_tag_low_level"))
 
 #ustawienia widgetow wtyczki (wygladu)
-def plugin_app(parent):    
+def plugin_app(parent):  
     return this.app.plugin_app(parent)
 
 #start pluginu

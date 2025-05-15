@@ -354,7 +354,7 @@ class Construct_Page:
     self.mainframe.pack(expand = True, fill ="both")
 
 
-    self.treeview_material_list = ttk.Treeview(self.mainframe,columns=('CS_RequiredAmount', 'CS_ProvidedAmount', 'FC_State'))
+    self.treeview_material_list = ttk.Treeview(self.mainframe,columns=('CS_RequiredAmount', 'CS_ProvidedAmount', 'FC_State'), selectmode="browse")
     self.treeview_material_list.pack(side="bottom", expand = True, fill ="both")
     self.treeview_material_list.heading('#0', text= 'Materiał')
     self.treeview_material_list.heading('CS_RequiredAmount', text= 'Wymagane')

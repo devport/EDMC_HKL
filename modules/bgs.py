@@ -165,7 +165,7 @@ class BGS_Page:
       else:
         sys_tag = 'normal'
 
-      self.system_item.append(self.treeview.insert('', index='end', text=system_row[1], values = (str(system_row[3]), str(round(system_row[4],2))+'%'), image=self.check_img[self.system_id-1], tags=sys_tag))
+      self.system_item.append(self.treeview.insert('', index='end', text=system_row[1], values = (str(system_row[3]) if str(system_row[3]) != "None" else "", str(round(system_row[4],2))+'%'), image=self.check_img[self.system_id-1], tags=sys_tag))
       #ladowanie frakcji
       faction_rows = self.db.Select('system_factions', '', f"UPPER(star_system) = \"{system_row[1].upper()}\"")
       if faction_rows:
@@ -180,7 +180,7 @@ class BGS_Page:
                 fact_tag = 'low'
               else:
                 fact_tag = 'faction'
-          self.faction_item.append(self.treeview.insert(self.system_item[self.system_id-1], 'end',  text= faction_row[1], values = (faction_row[2], str(round(faction_row[5], 2))+'%') , tags=fact_tag))
+          self.faction_item.append(self.treeview.insert(self.system_item[self.system_id-1], 'end',  text= faction_row[1], values = (faction_row[2] if faction_row[2] != "None" else "", str(round(faction_row[5], 2))+'%') , tags=fact_tag))
       
 
 #aktualizacja ze zdarzenia dziennika gry

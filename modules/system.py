@@ -66,7 +66,7 @@ class System_Page:
         self.button_system_edit = tk.Button(frame_system_frame1, text="Edytuj", command=self.window_system_edit)
         self.button_system_edit.pack(side='right', expand=False)
 
-        self.treeview_systems = ttk.Treeview(frame_system_frame2, columns=('MajorFaction'))
+        self.treeview_systems = ttk.Treeview(frame_system_frame2, columns=('MajorFaction'), selectmode="browse")
         self.treeview_systems.heading('#0', text= 'Nazwa')
         self.treeview_systems.heading('MajorFaction', text= 'Frakcja główna')
         self.treeview_systems.column('#0', minwidth=100, width=50)

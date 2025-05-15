@@ -6,7 +6,7 @@ import logging
 class BGSMini_DB:
   def __init__(self, plugin_dir):
     self.dbfile_name = 'local.db'
-    self.dbg_mode = False
+    self.dbg_mode = True
 
 
     self.dbfile_path = Path(plugin_dir) / self.dbfile_name
@@ -15,29 +15,29 @@ class BGSMini_DB:
       create_table = True
     self.sqlconn = sqlite3.connect(self.dbfile_path)
     self.sqlcur = self.sqlconn.cursor()
-    if create_table:
-      self.CreateTables()
+    #
+    self.CreateTables()
 
   def Close(self):
     self.sqlconn.close()
 
   def CreateTables(self):
-    try:
-      # entry["Factions"]["SquadronFaction"] == True dla TWH
-      # system_id = event["SystemAddress"], star_system = event["StarSystem"], faction_name = entry["SystemFaction"]["Name"], faction_state = entry["SystemFaction"]["FactionState"], influence = entry["Factions"]["Influence"]
-      self.sqlcur.execute("CREATE TABLE cmdr_systems (system_id INTEGER, group_id INTEGER, star_system TEXT, faction_name TEXT, faction_state TEXT, influence REAL DEFAULT 0, scan_time INTEGER DEFAULT 0)")
-      #
-      self.sqlcur.execute("CREATE TABLE cmdr_groups (id INTEGER, name TEXT, permission TEXT, PRIMARY KEY(\"id\" AUTOINCREMENT))")
-      # system_id = event["SystemAddress"], name = entry["Factions"]["Name"], state = entry["Factions"]["FactionState"], goverment = entry["Factions"]["Government"], happiness_localised = entry["Factions"]["Happiness_Localised"], influence = entry["Factions"]["Influence"]
-      self.sqlcur.execute("CREATE TABLE system_factions (star_system TEXT , name TEXT, state TEXT, goverment TEXT, happiness_localised TEXT, influence REAL DEFAULT 0)")
-      # tabela obiektow (marketow)
-      self.sqlcur.execute("CREATE TABLE system_objects (star_system TEXT, stationname TEXT, stationname_localised TEXT, market_id INTEGER DEFAULT 0, progress REAL DEFAULT 0)")
-      self.sqlcur.execute("CREATE TABLE object_materials (star_system TEXT, name TEXT, name_localised TEXT, market_id INTEGER DEFAULT 0, RequiredAmount INTEGER DEFAULT 0, ProvidedAmount INTEGER DEFAULT 0, Payment INTEGER DEFAULT 0)")
-      # tabela fleet carrier
-      self.sqlcur.execute("CREATE TABLE markets (market_id INTEGER, name TEXT, star_system TEXT, station_type TEXT)")  
-      self.sqlcur.execute("CREATE TABLE market_materials (market_id INTEGER, name TEXT, name_localised TEXT, category TEXT, stock INTEGER, Demand INTEGER, BuyPrice INTEGER, SellPrice INTEGER)")
-    except sqlite3.OperationalError:
-      if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when CREATE TABLE")
+    tables = []
+    tables.append("CREATE TABLE cmdr_systems (system_id INTEGER, group_id INTEGER, star_system TEXT, faction_name TEXT, faction_state TEXT, influence REAL DEFAULT 0, scan_time INTEGER DEFAULT 0)")  
+    tables.append("CREATE TABLE cmdr_groups (id INTEGER, name TEXT, permission TEXT, PRIMARY KEY(\"id\" AUTOINCREMENT))")  
+    tables.append("CREATE TABLE system_factions (star_system TEXT , name TEXT, state TEXT, goverment TEXT, happiness_localised TEXT, influence REAL DEFAULT 0)")  
+    tables.append("CREATE TABLE system_objects (star_system TEXT, stationname TEXT, stationname_localised TEXT, market_id INTEGER DEFAULT 0, progress REAL DEFAULT 0)")  
+    tables.append("CREATE TABLE object_materials (star_system TEXT, name TEXT, name_localised TEXT, market_id INTEGER DEFAULT 0, RequiredAmount INTEGER DEFAULT 0, ProvidedAmount INTEGER DEFAULT 0, Payment INTEGER DEFAULT 0)")  
+    
+    tables.append("CREATE TABLE markets (market_id INTEGER, name TEXT, star_system TEXT, station_type TEXT)")  
+    tables.append("CREATE TABLE market_materials (market_id INTEGER, name TEXT, name_localised TEXT, category TEXT, stock INTEGER, Demand INTEGER, BuyPrice INTEGER, SellPrice INTEGER)")  
+    tables.append("CREATE TABLE stations (StarSystem TEXT, SystemAddress INT, StationName TEXT, StationType TEXT, MarketID INT, DistFromStarLS INT, StationFaction TEXT, StationGovernment TEXT, StationGovernment_Localised TEXT, StationEconomy TEXT, StationEconomy_Localised TEXT, StationEconomies TEXT, LandingPads TEXT)")  
+    
+    for table in tables:
+      try:
+        self.sqlcur.execute(table)
+      except sqlite3.OperationalError:
+        if self.dbg_mode : print(f" !! --> sqlite3.Operational Error when ", table)
       #logger.exception('sqlite3.OperationalError when CREATE TABLE entries:')
     return
   
