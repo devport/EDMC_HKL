@@ -221,9 +221,9 @@ class Market_Page:
                             cargo = cargo_material['Count']
                 if (self.check_demand.get() == 1 and material_row[3] > 1) or (self.check_stock.get() == 1 and material_row[2] > 1):
                     if cargo > 0: 
-                        self.treeview_commodities.insert('', 'end', text=material_row[1], values=(material_row[2], material_row[3], cargo), tag="cargo")
+                        self.treeview_commodities.insert('', 'end', text=material_row[1], values=(format(int(material_row[2]), ',d')+" t", format(int(material_row[3]), ',d')+" t", format(int(cargo), ',d')+" t"), tag="cargo")
                     else:
-                        self.treeview_commodities.insert('', 'end', text=material_row[1], values=(material_row[2], material_row[3], cargo))
+                        self.treeview_commodities.insert('', 'end', text=material_row[1], values=(format(int(material_row[2]), ',d')+" t", format(int(material_row[3]), ',d')+" t", format(int(cargo), ',d')+" t"))
 
                
     def commodities_search(self):
@@ -243,7 +243,7 @@ class Market_Page:
                     treeview_commodities.delete(i)
                 #('Wagner Station', 'Thrite', 'Coriolis', 0, 0, 857)
                 for commodities_row in commodities_rows:
-                    treeview_commodities.insert('', 'end', text=commodities_row[0], values=(commodities_row[1], commodities_row[2], commodities_row[3], commodities_row[4], commodities_row[5]))
+                    treeview_commodities.insert('', 'end', text=commodities_row[0], values=(commodities_row[1], commodities_row[2], format(int(commodities_row[3]), ',d')+" t", format(int(commodities_row[4]), ',d')+" cr", format(int(commodities_row[5]), ',d')+" cr"))
 
         def treeview_OnDoubleClick(event):
             selected = treeview_commodities.focus() 

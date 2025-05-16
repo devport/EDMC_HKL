@@ -204,9 +204,9 @@ class Construct_Page:
       
       if material_row['RequiredAmount']-material_row['ProvidedAmount'] == 0 :
         if not self.check_completed.get():
-          self.treeview_material_list.insert('', 'end', text=material_row['NameLocalised'], values=(material_row['RequiredAmount'], material_row['RequiredAmount']-material_row['ProvidedAmount'], m_stock))
+          self.treeview_material_list.insert('', 'end', text=material_row['NameLocalised'], values=(format(int(material_row['RequiredAmount']), ',d')+" t", format(int(material_row['RequiredAmount']-material_row['ProvidedAmount']), ',d')+" t", format(int(m_stock), ',d')+" t"))
       else:
-        self.treeview_material_list.insert('', 'end', text=material_row['NameLocalised'], values=(material_row['RequiredAmount'], material_row['RequiredAmount']-material_row['ProvidedAmount'], m_stock))
+        self.treeview_material_list.insert('', 'end', text=material_row['NameLocalised'], values=(format(int(material_row['RequiredAmount']), ',d')+" t", format(int(material_row['RequiredAmount']-material_row['ProvidedAmount']), ',d')+" t", format(int(m_stock), ',d')+" t"))
 
   #glowna ramka modulu (glowna zakladka)
   def show(self, parent):
