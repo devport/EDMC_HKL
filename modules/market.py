@@ -219,7 +219,7 @@ class Market_Page:
                     for cargo_material in self.cargo_commodity_names:
                         if material_row[0] == cargo_material['Name'] :
                             cargo = cargo_material['Count']
-                if (self.check_demand.get() == 1 and material_row[3] != 0) or (self.check_stock.get() == 1 and material_row[2] != 0):
+                if (self.check_demand.get() == 1 and material_row[3] > 1) or (self.check_stock.get() == 1 and material_row[2] > 1):
                     if cargo > 0: 
                         self.treeview_commodities.insert('', 'end', text=material_row[1], values=(material_row[2], material_row[3], cargo), tag="cargo")
                     else:
