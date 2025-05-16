@@ -453,6 +453,19 @@ class Market_Page:
             self.load_journal()
             self.update_widgets() 
 
+
+        #"event":"MarketSell", "MarketID":3710784768, "Type":"titanium", "Count":792, "SellPrice":4446, "TotalSale":3521232, "AvgPricePaid":3897 }    
+        if entry['event'] == 'MarketSell' or entry['event'] == 'MarketBuy':    
+            material_row = self.db.Select('market_materials', 'stock, Demand', f"market_id = {entry['MarketID']} AND name = \"{entry['Type']}\"", True)
+            if material_row:
+                    if entry['event'] == 'MarketSell' :      
+                        new_val = material_row[1] - entry['Count']
+                        self.db.Update('market_materials', f"Demand = {new_val if new_val >= 0 else 0}", f"market_id = {entry['MarketID']} AND name = \"{entry['Type']}\"")
+                    elif entry['event'] == 'MarketBuy' :
+                        new_val = material_row[0] - entry['Count']
+                        self.db.Update('market_materials', f"stock = {new_val if new_val >= 0 else 0}", f"market_id = {entry['MarketID']} AND name = \"{entry['Type']}\"")
+                    self.update_widgets()
+                        
         if entry['event'] == 'Market':      
             self.current_market = {'StationName' : entry['StationName'], 'MarketID' : entry['MarketID'], 'StationType' : entry['StationType']}
             self.load_journal()
