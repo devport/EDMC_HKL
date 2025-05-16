@@ -3,7 +3,7 @@ Próba zrobienia pluginu wspomagającego grę w Elite Dangerous.
 Uwaga ! 
 Nie jestem zawodowym programistą. Ale dla przyjemności czasami programuję po swojemu.
 
-Wersja alpha 0.2
+Wersja alpha 0.3
 
 Co zostało zrobione:
 

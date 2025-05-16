@@ -4,7 +4,7 @@ An attempt to create a plugin to support gameplay in Elite Dangerous.
 Warning!
 I’m not a professional programmer. But I sometimes code for fun, in my own way.
 
-Alpha version 0.2
+Alpha version 0.3
 
 What has been done:
 
