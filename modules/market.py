@@ -448,10 +448,16 @@ class Market_Page:
 
     def update(self, cmdrname: str, is_beta: bool, system: str, station: str, entry: dict, state: dict):
         #"event":"Market", "MarketID":3710784768, "StationName":"TNB-46F", "StationType":"FleetCarrier"
+
+        if entry.get("event") == "Cargo":
+            self.load_journal()
+            self.update_widgets() 
+
         if entry['event'] == 'Market':      
             self.current_market = {'StationName' : entry['StationName'], 'MarketID' : entry['MarketID'], 'StationType' : entry['StationType']}
             market_row = self.db.Select('markets', 'name, star_system, station_type', f"market_id = {entry['MarketID']} ", True)    
             if market_row:
                 self.load_journal()
                 self.save()
-        return
+            self.update_widgets() 
+        
