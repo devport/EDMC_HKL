@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# vim: textwidth=0 wrapmargin=0 tabstop=4 shiftwidth=4 softtabstop=4 smartindent smarttab
-
-import logging
-
 import tkinter as tk
 from tkinter import ttk
 import sys
@@ -14,23 +9,13 @@ from pathlib import Path
 from tkinter import colorchooser
 from app import MyApp
 
+from tools import ptl
+
 from config import config, appname, appversion
 
 #globalne
 
 plugin_name = Path(__file__).resolve().parent.name
-logger = logging.getLogger(f'{appname}.{plugin_name}')
-if not logger.hasHandlers():
-    level = logging.INFO  # So logger.info(...) is equivalent to print()
-
-    logger.setLevel(level)
-    logger_channel = logging.StreamHandler()
-    logger_channel.setLevel(level)
-    logger_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(module)s:%(lineno)d:%(funcName)s: %(message)s')  # noqa: E501
-    logger_formatter.default_time_format = '%Y-%m-%d %H:%M:%S'
-    logger_formatter.default_msec_format = '%s.%03d'
-    logger_channel.setFormatter(logger_formatter)
-    logger.addHandler(logger_channel)
 
 this = sys.modules[__name__]
 this.app = None
@@ -70,32 +55,32 @@ def plugin_prefs(parent, cmdr, is_beta):
     frame = nb.Frame(parent)
     frame.columnconfigure(2, weight=1)
 
-    squadron_name_label = nb.Label(frame, text="Nazwa Squadronu:")
+    squadron_name_label = nb.Label(frame, text= ptl("Squadron name") + " : ")
     squadron_name_label.grid(column= 1, padx=10, row=1, sticky=tk.W)
 
     squadron_name = nb.Label(frame, text=this.SquadronName)
     squadron_name.grid(column= 2, padx=10, row=1, sticky=tk.W)
 
     #kolory frakcji
-    fact_faction_tag_label = nb.Label(frame, text="Kolor frakcji standardowy:")
+    fact_faction_tag_label = nb.Label(frame, text=ptl("Faction color") + " : ")
     if this.tag_fact_color != 'None' : fact_faction_tag_label.config(bg=this.tag_fact_color)
     fact_faction_tag_label.grid(column= 1, padx=10, row=5, sticky=tk.W)
 
-    fact_high_tag_label = nb.Label(frame, text="Kolor frakcji wysoki:")
+    fact_high_tag_label = nb.Label(frame, text=ptl("Faction color") + " " + ptl("high") + " : ")
     if this.tag_high_color != 'None' : fact_high_tag_label.config(bg=this.tag_high_color)
     fact_high_tag_label.grid(column= 1,padx=10, row=6, sticky=tk.W)
 
-    fact_high_tag_label1 = nb.Label(frame, text="Poziom frakcji wysoki:")
+    fact_high_tag_label1 = nb.Label(frame, text=ptl("Faction level") + " " + ptl("high") + " : ")
     fact_high_tag_label1.grid(column= 3,padx=10, row=6, sticky=tk.W)
 
     fact_high_tag_entry = tk.Spinbox(frame, from_= 0, to = 100, width=50, increment=1, textvariable=this.fact_high_level)
     fact_high_tag_entry.grid(column=4, padx=10, row=6, sticky=tk.EW)
 
-    fact_low_tag_label = nb.Label(frame, text="Kolor frakcji niski:")
+    fact_low_tag_label = nb.Label(frame, text= ptl("Faction color") + " " + ptl("low") + " : ")
     if this.tag_low_color != 'None' : fact_low_tag_label.config(bg=this.tag_low_color)
     fact_low_tag_label.grid(column= 1,padx=10, row=7, sticky=tk.W)
 
-    fact_low_tag_label1 = nb.Label(frame, text="Poziom frakcji niski:")
+    fact_low_tag_label1 = nb.Label(frame, text=ptl("Faction level") + " " + ptl("low") + " : ")
     fact_low_tag_label1.grid(column= 3,padx=10, row=7, sticky=tk.W)
 
     fact_low_tag_entry = tk.Spinbox(frame, from_= 0, to = 100, width=50, increment=1, textvariable=this.fact_low_level)
@@ -104,23 +89,23 @@ def plugin_prefs(parent, cmdr, is_beta):
     def choose_color(tag_name):
         match tag_name:
             case 'faction':
-                this.tag_fact_color = colorchooser.askcolor(title ="Wybierz kolor", initialcolor=this.tag_fact_color)[1]
+                this.tag_fact_color = colorchooser.askcolor(title = ptl("Choose a color"), initialcolor=this.tag_fact_color)[1]
                 fact_faction_tag_label.config(bg=this.tag_fact_color)
             case 'high':
-                this.tag_high_color = colorchooser.askcolor(title ="Wybierz kolor", initialcolor=this.tag_high_color)[1]
+                this.tag_high_color = colorchooser.askcolor(title = ptl("Choose a color"), initialcolor=this.tag_high_color)[1]
                 fact_high_tag_label.config(bg=this.tag_high_color)
             case 'low':
-                this.tag_low_color = colorchooser.askcolor(title ="Wybierz kolor", initialcolor=this.tag_low_color)[1]
+                this.tag_low_color = colorchooser.askcolor(title = ptl("Choose a color"), initialcolor=this.tag_low_color)[1]
                 fact_low_tag_label.config(bg=this.tag_low_color)
 
 
-    fact_faction_tag_button = nb.Button(frame, text="Wybierz Kolor", command=lambda: choose_color('faction'))
+    fact_faction_tag_button = nb.Button(frame, text= ptl("Choose a color"), command=lambda: choose_color('faction'))
     fact_faction_tag_button.grid(column= 2, padx=10, row=5, sticky=tk.W)
 
-    fact_high_tag_button = nb.Button(frame, text="Wybierz Kolor", command=lambda: choose_color('high'))
+    fact_high_tag_button = nb.Button(frame, text= ptl("Choose a color"), command=lambda: choose_color('high'))
     fact_high_tag_button.grid(column= 2, padx=10, row=6, sticky=tk.W)
 
-    fact_low_tag_button = nb.Button(frame, text="Wybierz Kolor", command=lambda: choose_color('low'))
+    fact_low_tag_button = nb.Button(frame, text= ptl("Choose a color"), command=lambda: choose_color('low'))
     fact_low_tag_button.grid(column= 2, padx=10, row=7, sticky=tk.W)
     return frame    
 

@@ -4,9 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
 
-
-#from modules.chart import LineGraphApp
-#data_points = [(1, 2), (20, 50), (30, 35), (40, 90), (50, 60), (60, 110)]
+from tools import ptl
 
 class Station_Page:
     select_group = None
@@ -26,17 +24,17 @@ class Station_Page:
         main_frame = tk.Frame(parent)
         main_frame.pack(fill="both", expand=True)
 
-        select_frame = tk.LabelFrame(main_frame, text="Wybór")
-        select_frame.pack(side="top", fill="x")
-        select_group_frame = tk.Frame(select_frame)
+        self.select_frame = tk.LabelFrame(main_frame)
+        self.select_frame.pack(side="top", fill="x")
+        select_group_frame = tk.Frame(self.select_frame)
         select_group_frame.pack(side="top", fill="x")
-        select_system_frame = tk.Frame(select_frame)
+        select_system_frame = tk.Frame(self.select_frame)
         select_system_frame.pack(side="top", fill="x")
-        select_station_frame = tk.Frame(select_frame)
+        select_station_frame = tk.Frame(self.select_frame)
         select_station_frame.pack(side="top", fill="x")
 
-        group_title = tk.Label(select_group_frame, text="Grupa:")
-        group_title.pack(side="left")
+        self.group_title = tk.Label(select_group_frame)
+        self.group_title.pack(side="left")
         self.combobox_groups = ttk.Combobox(select_group_frame)
         self.combobox_groups.pack(side="left", padx=10, fill="x", expand=True)
         self.combobox_groups.config(state='readonly')
@@ -49,8 +47,8 @@ class Station_Page:
 
         self.combobox_groups.bind('<<ComboboxSelected>>', Select_Group_Combo)
 
-        system_title = tk.Label(select_system_frame, text="System:")
-        system_title.pack(side="left")
+        self.system_title = tk.Label(select_system_frame)
+        self.system_title.pack(side="left")
         self.combobox_systems = ttk.Combobox(select_system_frame)
         self.combobox_systems.pack(side="left", padx=10, fill="x", expand=True)
         self.combobox_systems.config(state='readonly')
@@ -63,8 +61,8 @@ class Station_Page:
 
         self.combobox_systems.bind('<<ComboboxSelected>>', Select_System_Combo)
 
-        station_title = tk.Label(select_station_frame, text="Stacja:")
-        station_title.pack(side="left")
+        self.station_title = tk.Label(select_station_frame)
+        self.station_title.pack(side="left")
         self.combobox_stations = ttk.Combobox(select_station_frame)
         self.combobox_stations.pack(side="left", padx=10, fill="x", expand=True)
         self.combobox_stations.config(state='readonly')
@@ -94,8 +92,8 @@ class Station_Page:
         self.combobox_stations.bind('<<ComboboxSelected>>', Select_Station_Combo)
 
         #Station
-        station_frame = tk.LabelFrame(main_frame, text="Stacja/Obiekt")
-        station_frame.pack(side="top", fill="x")
+        self.station_frame = tk.LabelFrame(main_frame, text="Stacja/Obiekt")
+        self.station_frame.pack(side="top", fill="x")
 
         #left_frame = tk.Frame(station_frame)
         #left_frame.pack(side="left", fill="both", expand=True)
@@ -107,37 +105,37 @@ class Station_Page:
         eco_frame.pack(side="top", fill="x")
 
 
-        self.station_name_label = tk.Label(station_frame, text="StationName", anchor='w', font=tkFont.Font(family="Arial", size=14))
+        self.station_name_label = tk.Label(self.station_frame, anchor='w', font=tkFont.Font(family="Arial", size=14))
         self.station_name_label.pack(side="top", fill="x", padx=15)
-        self.star_system_label = tk.Label(station_frame, text="StarSystem", anchor='w', font=tkFont.Font(family="Arial", size=14))
+        self.star_system_label = tk.Label(self.station_frame, anchor='w', font=tkFont.Font(family="Arial", size=14))
         self.star_system_label.pack(side="top", fill="x", padx=15)
 
         #left
-        self.station_type_title = tk.Label(station_frame, text="Typ : no data", anchor='w')
+        self.station_type_title = tk.Label(self.station_frame, anchor='w')
         self.station_type_title.pack(side="top", fill="x", padx=15)
 
-        self.landing_pads_title = tk.Label(station_frame, text="Londowalne Pady: no data", anchor='w')
+        self.landing_pads_title = tk.Label(self.station_frame, anchor='w')
         self.landing_pads_title.pack(side="top", fill="x", padx=15)
 
-        self.station_faction_label = tk.Label(station_frame, text="Frakcja: ", anchor='w')
+        self.station_faction_label = tk.Label(self.station_frame, anchor='w')
         self.station_faction_label.pack(side="top", fill="x", padx=15)
                 
-        self.station_faction_list = tk.Label(station_frame, text="no data", anchor='w')
+        self.station_faction_list = tk.Label(self.station_frame, anchor='w')
         self.station_faction_list.pack(side="top", fill="x", padx=15)
         #right
-        self.station_distance_label = tk.Label(station_frame, text="Dystans od gwiazdy : no data", anchor='w')
+        self.station_distance_label = tk.Label(self.station_frame, anchor='w')
         self.station_distance_label.pack(side="top", fill="x", padx=15)
 
-        self.station_government_label = tk.Label(station_frame, text="Rząd : no data", anchor='w')
+        self.station_government_label = tk.Label(self.station_frame, anchor='w')
         self.station_government_label.pack(side="top", fill="x", padx=15)
 
-        self.station_economy_title = tk.Label(station_frame, text="Ekonomia : no data", anchor='w')
+        self.station_economy_title = tk.Label(self.station_frame, anchor='w')
         self.station_economy_title.pack(side="top", fill="x", padx=15)
 
-        self.station_economies_label = tk.Label(station_frame, text="Pozostale ekonomie :", anchor='w')
+        self.station_economies_label = tk.Label(self.station_frame, anchor='w')
         self.station_economies_label.pack(side="top", fill="x", padx=15)
 
-        self.station_economies_list = tk.Label(station_frame, text="no data", anchor='w')
+        self.station_economies_list = tk.Label(self.station_frame, anchor='w')
         self.station_economies_list.pack(side="top", fill="x", padx=15)
 
         self.update_widgets()
@@ -149,15 +147,32 @@ class Station_Page:
         print("select_system: ", self.select_system)
         print("select_station: ", self.select_station)
 
+        self.select_frame.config(text= ptl("Choise"))
+        self.group_title.config(text= ptl("Group"))
+        self.system_title.config(text = ptl("System") + ":")
+        self.station_title.config(text = ptl("Station") + ":")
+
+        self.station_name_label.config(text = ptl("Station name"))
+        self.star_system_label.config(text = ptl("System name"))
+        self.station_type_title.config(text = ptl("Station type : "))
+        self.landing_pads_title.config(text = ptl("Landing pads : "))
+        self.station_faction_label.config(text = ptl("Station faction : "))
+        self.station_faction_list.config(text = ptl("no data"))
+        self.station_distance_label.config(text = ptl("Disctance from star : "))
+        self.station_government_label.config(text = ptl("Government : "))
+        self.station_economy_title.config(text = ptl("Station economy : "))
+        self.station_economies_label.config(text = ptl("Others economies : "))
+        self.station_economies_list.config(text = ptl("no data"))
+
         # groups
         group_rows = self.db.Select('cmdr_groups', 'id, name', '')
         self.group_names.clear()
         if group_rows :
-            self.group_names.append("Wszystkie")
+            self.group_names.append(ptl("All"))
             for group_item in group_rows:
                 self.group_names.append(group_item[1])
         else:
-            self.group_names.append("Brak")
+            self.group_names.append(ptl("None"))
 
         self.combobox_groups.config(values=self.group_names)
         self.combobox_groups.current(0)   
@@ -172,11 +187,11 @@ class Station_Page:
 
         self.system_names.clear()
         if system_rows :
-            self.system_names.append("Wszystkie")
+            self.system_names.append(ptl("All"))
             for system_item in system_rows:
                 self.system_names.append(system_item[0])
         else:
-            self.system_names.append("Brak")
+            self.system_names.append(ptl("None"))
 
         self.combobox_systems.config(values=self.system_names)
         self.combobox_systems.current(0)   
@@ -193,11 +208,11 @@ class Station_Page:
 
         self.station_names.clear()
         if station_rows :
-            self.station_names.append("Wszystkie")
+            self.station_names.append(ptl("All"))
             for station_item in station_rows:
                 self.station_names.append(station_item[0])
         else:
-            self.station_names.append("Brak")
+            self.station_names.append(ptl("None"))
 
         self.combobox_stations.config(values=self.station_names)
         self.combobox_stations.current(0)   
@@ -207,20 +222,20 @@ class Station_Page:
         # Station Info
             self.station_name_label.config(text=self.select_station['StationName'])
             self.star_system_label.config(text=self.select_station['StarSystem'])
-            self.station_type_title.config(text="Typ : " + self.select_station['StationType'])
+            self.station_type_title.config(text=ptl("Station type : ") + self.select_station['StationType'])
             landingPads = eval(self.select_station['LandingPads'])
-            self.landing_pads_title.config(text=f"Londowalne Pady: L({landingPads['Large']}) M({landingPads['Medium']}) S({landingPads['Small']})")
+            self.landing_pads_title.config(text=ptl("Landing pads : ")+f" L({landingPads['Large']}) M({landingPads['Medium']}) S({landingPads['Small']})")
 
             stationFaction = eval(self.select_station["StationFaction"])
             self.station_faction_list.config(text=f"{stationFaction['Name']}")
 
-            self.station_distance_label.config(text=f"Dystans od gwiazdy : {round(self.select_station['DistFromStarLS'],2)} Ls")
-            self.station_government_label.config(text=f"Rząd : {self.select_station['StationGovernment_Localised']}")
+            self.station_distance_label.config(text=ptl("Disctance from star : ") + f"{round(self.select_station['DistFromStarLS'],2)} Ls")
+            self.station_government_label.config(text=ptl("Government : ") + f"{self.select_station['StationGovernment_Localised']}")
             stationEconomies = eval(self.select_station["StationEconomies"])
             st_text = ""
             for st in stationEconomies:
                 if self.select_station['StationEconomy'] == st['Name'] :
-                    self.station_economy_title.config(text=f"Ekonomia : {self.select_station['StationEconomy_Localised']}  ({round(st['Proportion'],1)})")
+                    self.station_economy_title.config(text=ptl("Station economy : ")+f"{self.select_station['StationEconomy_Localised']}  ({round(st['Proportion'],1)})")
                 else:
                     st_text += f"{st['Name_Localised']} : {round(st['Proportion'],1)}\n"
             self.station_economies_list.config(text=st_text)
@@ -240,7 +255,7 @@ class Station_Page:
                         f"\"{entry.get("StarSystem")}\", {entry.get("SystemAddress")}, \"{entry.get("StationName")}\", \"{entry.get("StationType")}\", {entry.get('MarketID')}, {entry.get("DistFromStarLS")}, \"{entry.get("StationFaction")}\", \"{entry.get("StationGovernment")}\", \"{entry.get("StationGovernment_Localised")}\", \"{entry.get("StationEconomy")}\", \"{entry.get("StationEconomy_Localised")}\", \"{entry.get("StationEconomies")}\", \"{entry.get("LandingPads")}\" ")
                 self.update_widgets()
 
-            self.StationName = entry.get("StationName")
+            '''self.StationName = entry.get("StationName")
             self.StationType = entry.get("StationType")
             self.Taxi = entry.get("Taxi")
             self.Multicrew = entry.get("Multicrew")
@@ -249,7 +264,6 @@ class Station_Page:
             
             self.MarketID = entry.get('MarketID')
             self.StationFaction = entry.get("StationFaction")
-            print("->>>>>>>>>>>", entry.get("StationFaction"))
             self.StationGovernment = entry.get("StationGovernment")
             self.StationGovernment_Localised = entry.get("StationGovernment_Localised")
             self.StationServices = entry.get("StationServices")
@@ -261,4 +275,4 @@ class Station_Page:
 
             self.DistFromStarLS = entry.get("DistFromStarLS")
             self.LandingPads = entry.get("LandingPads")
-            self.update_widgets()
+            self.update_widgets()'''

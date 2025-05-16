@@ -1,0 +1,93 @@
+/* UI */
+
+
+/* global */
+"BGS" = "BGS";
+"Constructions" = "Konstrukcje";
+"Group" = "Grupa";
+"Group :" = "Grupa :";
+"Groups" = "Grupy";
+"Add group" = "Dodaj grupę";
+"Edit group" = "Edytuj grupę";
+"Group name" = "Nazwa grupy";
+"System" = "System";
+"Systems" = "Systemy";
+"Systems :" = "Systemy :";
+"Add system" = "Dodaj system";
+"Delete system" = "Usuń system";
+"Edit system" = "Edytuj system";
+"System name" = "Nazwa systemu";
+"Stations" = "Stacje";
+"Market" = "Rynek";
+"Market : " = "Rynek : ";
+"Markets" = "Rynki";
+"Object" = "Obiekt";
+"Object : " = "Obiekt : ";
+"All" = "Wszystkie";
+"None" = "Brak";
+"State" = "Stan";
+"Influence" = "Wpływy";
+"Current : " = "Aktualny : ";
+
+/* config */
+"Squadron name" = "Nazwa Squadronu";
+"Faction color" = "Kolor frakcji";
+"Faction level" = "Poziom frakcji";
+"high" = "wysoki";
+"low" = "niski";
+"Choose a color" = "Wybierz kolor";
+
+/* buttons */
+"Add" = "Dodaj";
+"Edit" = "Edytuj";
+"Delete" = "Usuń";
+"Show" = "Pokaż";
+"Cancel" = "Anuluj";
+"Save" = "Zapisz";
+"Yes" = "Tak";
+"No" = "Nie";
+"Close" = "Zamknij";
+
+/* bgs*/
+"Name" = "Nazwa";
+"Major Faction" = "Frakcja główna";
+
+/* construct */
+"Completed : " = "Ukończono : ";
+"Current object : " = "Aktualny obiekt :";
+"Current market : " = "Aktualny rynek :";
+
+"Hide completed content" = "Ukryj zasypane materiały";
+"Material name" = "Nazwa towaru";
+"Demand" = "Zapotrzebowanie";
+"Stock" = "Stan";
+"On cargo" = "W ładowni";
+"Left" = "Pozostało";
+
+"Are you sure you want to remove the system:" = "Czy napewno chcesz usunąć system:";
+"Commodities" = "Towary";
+"Show demand" = "Pokaż skup";
+"Show stock" = "Pokaż sprzedaż";
+"Search" = "Szukaj";
+"Search commoditie" = "Szukaj towaru";
+"Commoditie name :" = "Nazwa towaru :";
+
+"Station name" = "Nazwa stacji";
+"Station type" = "Typ stacji";
+"System name" = "System";
+"Buy price" = "Cena kupna";
+"Sell price" = "Cena sprzedaży";
+
+/*station*/
+"no data" = "Brak danych";
+"Choise" = "Wybierz";
+
+"Station type : " = "Typ stacji : ";
+"Landing pads : " = "Pady lądowalne : ";
+"Station faction : " = "Frakcja stacji : ";
+"Disctance from star : " = "Dystans od gwiazdy : ";
+"Government : " = "Rząd : ";
+"Station economy : " = "Ekonomia stacji : ";
+"Others economies : " = "Pozostałe ekonomie : ";
+
+

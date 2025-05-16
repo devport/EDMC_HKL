@@ -5,7 +5,7 @@ from tkinter import ttk
 from pathlib import Path
 import logging
 
-from modules.db import BGSMini_DB
+from tools import ptl
 
 class System_Page:
     def __init__(self, parent):
@@ -22,26 +22,26 @@ class System_Page:
     def show(self, parent):
         self.parent = parent
         # frames
-        frame_group = tk.LabelFrame(self.parent, text="Grupa")
-        frame_group.pack(fill='x')
+        self.frame_group = tk.LabelFrame(self.parent)
+        self.frame_group.pack(fill='x')
 
         
-        frame_system = tk.LabelFrame(self.parent, text="Systemy")
-        frame_system.pack(fill="both", expand=True)
-        frame_system_frame1 = tk.Frame(frame_system)
+        self.frame_system = tk.LabelFrame(self.parent)
+        self.frame_system.pack(fill="both", expand=True)
+        frame_system_frame1 = tk.Frame(self.frame_system)
         frame_system_frame1.pack(side='top', fill='x')
-        frame_system_frame2 = tk.Frame(frame_system)
+        frame_system_frame2 = tk.Frame(self.frame_system)
         frame_system_frame2.pack(side='top', fill='both', expand=True)
         
         # frame group
-        self.combobox_groups = ttk.Combobox(frame_group)
+        self.combobox_groups = ttk.Combobox(self.frame_group)
         self.combobox_groups.config(state='readonly')
         self.combobox_groups.pack(side='left', fill='x', expand=True)
-        self.button_group_add = tk.Button(frame_group, text="Dodaj", command=self.window_group_add)
+        self.button_group_add = tk.Button(self.frame_group, command=self.window_group_add)
         self.button_group_add.pack(side='left', expand=False)
-        self.button_group_edit = tk.Button(frame_group, text="Edytuj", command=self.window_group_edit)
+        self.button_group_edit = tk.Button(self.frame_group, command=self.window_group_edit)
         self.button_group_edit.pack(side='left', expand=False)
-        self.button_group_remove = tk.Button(frame_group, text="Usuń", command=self.window_group_remove)
+        self.button_group_remove = tk.Button(self.frame_group, command=self.window_group_remove)
         self.button_group_remove.pack(side='left', expand=False)
 
         def Select_Group_Combo(event):
@@ -54,7 +54,7 @@ class System_Page:
         self.combobox_groups.bind('<<ComboboxSelected>>', Select_Group_Combo)
 
         # frame system
-        self.label_system_title = tk.Label(frame_system_frame1, text="Aktywny : ")
+        self.label_system_title = tk.Label(frame_system_frame1)
         self.label_system_title.pack(side='left', expand=False)
         self.label_system_current_name = tk.Label(frame_system_frame1, text="-")
         self.label_system_current_name.pack(side='left', expand=True)
@@ -67,8 +67,6 @@ class System_Page:
         self.button_system_edit.pack(side='right', expand=False)
 
         self.treeview_systems = ttk.Treeview(frame_system_frame2, columns=('MajorFaction'), selectmode="browse")
-        self.treeview_systems.heading('#0', text= 'Nazwa')
-        self.treeview_systems.heading('MajorFaction', text= 'Frakcja główna')
         self.treeview_systems.column('#0', minwidth=100, width=50)
         self.treeview_systems.column('MajorFaction', minwidth=100, width=50)
         self.treeview_systems.pack(fill ="both", expand = True)
@@ -82,15 +80,31 @@ class System_Page:
         self.update_widgets()
 
     def update_widgets(self):
+
+        self.frame_group.config(text = ptl("Group"))
+        self.frame_system.config(text = ptl("Systems"))
+        self.label_system_title.config(text= ptl("Current : "))
+
+        self.button_group_add.config(text = ptl("Add"))
+        self.button_group_edit.config(text = ptl("Edit"))
+        self.button_group_remove.config(text = ptl("Delete"))
+
+        self.button_system_add.config(text = ptl("Add"))
+        self.button_system_edit.config(text = ptl("Edit"))
+        self.button_system_remove.config(text = ptl("Delete"))
+
+        self.treeview_systems.heading('#0', text= ptl("Name"))
+        self.treeview_systems.heading('MajorFaction', text= ptl("Major Faction"))
+        
         # frame group
         group_rows = self.db.Select('cmdr_groups', 'id, name', '')
         self.groups = []
         if group_rows :
-            self.groups.append("Wszystkie")
+            self.groups.append(ptl("All"))
             for group_item in group_rows:
                 self.groups.append(group_item[1])
         else:
-            self.groups.append("Brak")
+            self.groups.append(ptl("None"))
 
         self.combobox_groups.config(values=self.groups)
         self.combobox_groups.current(0)   
@@ -127,23 +141,23 @@ class System_Page:
             self.app.update_widgets()
 
         
-        add_wnd.title("Dodaj grupę")
+        add_wnd.title(ptl("Add group"))
         add_wnd.resizable(width=False, height=False)
         add_wnd.minsize(300,100)
 
         frame = tk.Frame(add_wnd)
         frame.pack(padx=5, fill='both', expand=True)
 
-        system_name_label = tk.Label(frame, text="Nazwa grupy:")
+        system_name_label = tk.Label(frame, text= ptl("Group name"))
         system_name_label.pack(side='top', fill='x', expand=True)
         
         system_name_entry = tk.Entry(frame, textvariable=new_name)
         system_name_entry.pack(side='top', fill='x', expand=True)
         system_name_entry.focus()
 
-        button_add = tk.Button(frame, text="Dodaj", command=system_management_add)
+        button_add = tk.Button(frame, text= ptl("Add"), command=system_management_add)
         button_add.pack(side='top', fill='x', expand=True)
-        button_cancel = tk.Button(frame, text="Anuluj", command=add_wnd.destroy)
+        button_cancel = tk.Button(frame, text= ptl("Cancel"), command=add_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
     
     def window_group_edit(self):
@@ -162,23 +176,23 @@ class System_Page:
             edit_wnd.update()
             self.app.update_widgets()
 
-        edit_wnd.title("Edytuj grupę")
+        edit_wnd.title(ptl("Edit group"))
         edit_wnd.resizable(width=False, height=False)
         edit_wnd.minsize(300,100)
 
         frame = tk.Frame(edit_wnd)
         frame.pack(padx=5, fill='both', expand=True)
         
-        group_name_label = tk.Label(frame, text="Nazwa grupy:")
+        group_name_label = tk.Label(frame, text=ptl("Group name"))
         group_name_label.pack(side='top', fill='x', expand=True)
 
         group_name_entry = tk.Entry(frame, textvariable=edit_name)
         group_name_entry.pack(side='top', fill='x', expand=True)
         group_name_entry.focus()
 
-        button_add = tk.Button(frame, text="Zapisz", command=window_group_save)
+        button_add = tk.Button(frame, text= ptl("Save"), command=window_group_save)
         button_add.pack(side='top', fill='x', expand=True)
-        button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
+        button_cancel = tk.Button(frame, text= ptl("Cancel"), command=edit_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
 
     def window_group_remove(self):
@@ -207,39 +221,39 @@ class System_Page:
             add_wnd.update()
             self.app.update_widgets()
 
-        add_wnd.title("Dodaj system")
+        add_wnd.title(ptl("Add system"))
         add_wnd.resizable(width=False, height=False)
         frame = tk.Frame(add_wnd)
         frame.pack(padx=5, fill='both', expand=True)
         combobox_groups = ttk.Combobox(frame)
 
-        system_name_label = tk.Label(frame, text="Nazwa systemu:")
+        system_name_label = tk.Label(frame, text= ptl("System name"))
         system_name_label.pack(side='top', fill='x', expand=True)
     
         system_name_entry = tk.Entry(frame, textvariable=new_name)
         system_name_entry.pack(side='top', fill='x', expand=True)
         system_name_entry.focus()
 
-        system_group_label = tk.Label(frame, text="Grupa")
+        system_group_label = tk.Label(frame, text= ptl("Group"))
         system_group_label.pack(side='top', )
 
         group_rows = self.db.Select('cmdr_groups', 'id, name', '')
         groups = []
         if group_rows :
-            groups.append("Brak")
+            groups.append(ptl("None"))
             for group_item in group_rows:
                 groups.append(group_item[1])
         else:
-            groups.append("Brak")
+            groups.append(ptl("None"))
         
         combobox_groups.config(state='readonly')
         combobox_groups.pack(side='top', fill='x', expand=True)
         combobox_groups.config(values=groups)
         combobox_groups.current(0)   
 
-        button_add = tk.Button(frame, text="Dodaj", command=system_management_add)
+        button_add = tk.Button(frame, text= ptl("Add"), command=system_management_add)
         button_add.pack(side='top', fill='x', expand=True)
-        button_cancel = tk.Button(frame, text="Anuluj", command=add_wnd.destroy)
+        button_cancel = tk.Button(frame, text= ptl("Cancel"), command=add_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
 
     def window_system_remove(self):
@@ -252,18 +266,18 @@ class System_Page:
             remove_wnd.update()
             self.app.update_widgets()
             
-        remove_wnd.title("Usuń system")
+        remove_wnd.title(ptl("Delete system"))
         remove_wnd.minsize(300,100)
         remove_wnd.resizable(width=False, height=False)
         remove_wnd_frame = tk.Frame(remove_wnd)
         remove_wnd_frame.pack(padx=5, fill='both', expand=True)
-        label_remove_query = tk.Label(remove_wnd_frame, text="Czy napewno chcesz usunąć system:")
+        label_remove_query = tk.Label(remove_wnd_frame, text= ptl("Are you sure you want to remove the system:"))
         label_remove_query.pack(side='top', fill='x', expand=True)
         label_remove_system_name = tk.Label(remove_wnd_frame, text=f'"{self.selected_system}"')
         label_remove_system_name.pack(side='top', fill='x', expand=True)
-        button_remove_yes = tk.Button(remove_wnd_frame, text="Tak", command=system_query_remove_yes)
+        button_remove_yes = tk.Button(remove_wnd_frame, text= ptl("Yes"), command=system_query_remove_yes)
         button_remove_yes.pack(side='top', fill='x', expand=True)
-        button_remove_no = tk.Button(remove_wnd_frame, text="Nie", command=remove_wnd.destroy)
+        button_remove_no = tk.Button(remove_wnd_frame, text= ptl("No"), command=remove_wnd.destroy)
         button_remove_no.pack(side='top', fill='x', expand=True)
 
     def window_system_edit(self):
@@ -292,28 +306,28 @@ class System_Page:
             edit_wnd.update()
             self.app.update_widgets()
 
-        edit_wnd.title("Edytuj system")
+        edit_wnd.title(ptl("Edit system"))
         edit_wnd.resizable(width=False, height=False)
         frame.pack(padx=5, fill='both', expand=True)
     
-        system_name_label = tk.Label(frame, text="Nazwa systemu:")
+        system_name_label = tk.Label(frame, text= ptl("System name"))
         system_name_label.pack(side='top', fill='x', expand=True)
     
         system_name_entry = tk.Entry(frame, textvariable=sys_name)
         system_name_entry.pack(side='top', fill='x', expand=True)
         system_name_entry.focus()
 
-        system_group_label = tk.Label(frame, text="Grupa")
+        system_group_label = tk.Label(frame, text= ptl("Group"))
         system_group_label.pack(side='top', )
 
         group_rows = self.db.Select('cmdr_groups', 'id, name', '')
         groups = []
         if group_rows :
-            groups.append("Brak")
+            groups.append(ptl("None"))
             for group_item in group_rows:
                 groups.append(group_item[1])
         else:
-            groups.append("Brak")
+            groups.append(ptl("None"))
         
         combobox_groups.config(state='readonly')
         combobox_groups.pack(side='top', fill='x', expand=True)
@@ -321,9 +335,9 @@ class System_Page:
         combobox_groups.current(0)   
         if system_row[1] != None:
             combobox_groups.set(system_group_row[0])    
-        button_add = tk.Button(frame, text="Zapisz", command=system_management_save)
+        button_add = tk.Button(frame, text= ptl("Save"), command=system_management_save)
         button_add.pack(side='top', fill='x', expand=True)
-        button_cancel = tk.Button(frame, text="Anuluj", command=edit_wnd.destroy)
+        button_cancel = tk.Button(frame, text= ptl("Cancel"), command=edit_wnd.destroy)
         button_cancel.pack(side='top', fill='x', expand=True)
 
     #aktualizacja ze zdarzenia dziennika gry

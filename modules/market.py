@@ -7,7 +7,7 @@ from tkinter import Tk
 from tkinter import ttk
 
 from config import config
-from modules.db import BGSMini_DB
+from tools import ptl
 
 FILENAME_MARKET = "Market.json"
 FILENAME_CARGO = "Cargo.json"
@@ -57,19 +57,19 @@ class Market_Page:
         self.parent = parent
     
         #Commodities
-        frame_markets = tk.LabelFrame(self.parent, text="Rynki")
-        frame_markets.pack(fill="both", expand=True)
+        self.frame_markets = tk.LabelFrame(self.parent)
+        self.frame_markets.pack(fill="both", expand=True)
 
-        child_frame1 = tk.Frame(frame_markets)
+        child_frame1 = tk.Frame(self.frame_markets)
         child_frame1.pack(side='top', fill='x')
-        child_frame2 = tk.Frame(frame_markets)
+        child_frame2 = tk.Frame(self.frame_markets)
         child_frame2.pack(side='top', fill='x')
-        child_frame3 = tk.LabelFrame(frame_markets, text="Towary")
-        child_frame3.pack(side='top', fill='x')        
-        child_frame31 = tk.Frame(frame_markets)
+        self.child_frame3 = tk.LabelFrame(self.frame_markets)
+        self.child_frame3.pack(side='top', fill='x')        
+        child_frame31 = tk.Frame(self.frame_markets)
         child_frame31.pack(side='top', fill='both', expand=True)
          
-        self.label_current_market = tk.Label(child_frame1, text="Aktualny :", anchor='w')
+        self.label_current_market = tk.Label(child_frame1, anchor='w')
         self.label_current_market.pack(padx=5, side='left', fill='x', expand=True)
 
         def current_market_add():
@@ -87,9 +87,9 @@ class Market_Page:
                 self.select_market_materials = self.current_market_materials 
                 self.update_widgets()
 
-        self.button_current_market_add = tk.Button(child_frame1, text="Dodaj", command=current_market_add)
+        self.button_current_market_add = tk.Button(child_frame1, command=current_market_add)
         self.button_current_market_add.pack(side='left', expand=False)
-        self.button_current_market_show = tk.Button(child_frame1, text="Pokaż", command=current_market_show)
+        self.button_current_market_show = tk.Button(child_frame1, command=current_market_show)
         self.button_current_market_show.pack(side='left', expand=False)
 
 
@@ -113,7 +113,7 @@ class Market_Page:
                 self.select_market_materials = None
                 self.update_widgets()
 
-        self.button_select_market_delete = tk.Button(child_frame2, text="Usuń", command=market_delete)
+        self.button_select_market_delete = tk.Button(child_frame2, command=market_delete)
         self.button_select_market_delete.pack(side='left', expand=False)
 
         #----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -130,20 +130,17 @@ class Market_Page:
             r.clipboard_append(copiedText)
             r.destroy()
 
-        self.checkbutton_demand = tk.Checkbutton(child_frame3, text='Pokaż skup', variable=self.check_demand, onvalue=1, offvalue=0, command=update_check)
+        self.checkbutton_demand = tk.Checkbutton(self.child_frame3, text='Pokaż skup', variable=self.check_demand, onvalue=1, offvalue=0, command=update_check)
         self.checkbutton_demand.pack(side='left', anchor='w')
         self.checkbutton_demand.flash()
-        self.checkbutton_stock = tk.Checkbutton(child_frame3, text='Pokaż sprzedaż', variable=self.check_stock, onvalue=1, offvalue=0, command=update_check)
+        self.checkbutton_stock = tk.Checkbutton(self.child_frame3, text='Pokaż sprzedaż', variable=self.check_stock, onvalue=1, offvalue=0, command=update_check)
         self.checkbutton_stock.pack(side='left', anchor='w')
         self.checkbutton_stock.flash()
-        button_commodities_search = tk.Button(child_frame3, text="Szukaj", command=self.commodities_search)
-        button_commodities_search.pack(side='right', expand=False)
+        self.button_commodities_search = tk.Button(self.child_frame3, text="Szukaj", command=self.commodities_search)
+        self.button_commodities_search.pack(side='right', expand=False)
 
         self.treeview_commodities = ttk.Treeview(child_frame31, columns=('Stock', 'Demand', 'Cargo'))
         self.treeview_commodities.heading('#0', text= 'Nazwa')
-        self.treeview_commodities.heading('Demand', text='Skup')
-        self.treeview_commodities.heading('Stock', text= 'Sprzedaż')
-        self.treeview_commodities.heading('Cargo', text= 'Na statku')
         self.treeview_commodities.column('#0', minwidth=120)
         self.treeview_commodities.column('Demand', minwidth=70, width=70)
         self.treeview_commodities.column('Stock', minwidth=30, width=30)
@@ -157,6 +154,22 @@ class Market_Page:
     def update_widgets(self):
         #aktualny rynek
 
+        self.frame_markets.config(text= ptl("Markets"))
+
+        self.child_frame3.config(text= ptl("Commodities"))
+        self.label_current_market.config(text= ptl("Current : "))
+        self.button_current_market_add.config(text= ptl("Add"))
+        self.button_current_market_show.config(text= ptl("Show"))
+        self.button_select_market_delete.config(text= ptl("Delete"))
+
+        self.checkbutton_demand.config(text = ptl("Show demand"))
+        self.checkbutton_stock.config(text = ptl("Show stock"))
+        self.button_commodities_search.config(text= ptl("Search"))
+
+        self.treeview_commodities.heading('Demand', text= ptl("Demand"))
+        self.treeview_commodities.heading('Stock', text= ptl("Stock"))
+        self.treeview_commodities.heading('Cargo', text= ptl("On cargo"))
+
         self.load_journal()
         if self.current_market != None:
             self.label_current_market.config(text="Aktualny :"+str(self.current_market['StationName']))
@@ -165,12 +178,12 @@ class Market_Page:
         self.markets = []
         market_rows = self.db.Select('markets', 'market_id, name, station_type', '')
         if market_rows:
-            self.markets.append("Żaden")
+            self.markets.append(ptl("None"))
             self.combobox_markets.config(state='readonly')
             for market_row in market_rows:
                 self.markets.append(market_row[1])
         else:
-            self.markets.append("Brak")
+            self.markets.append(ptl("None"))
             self.combobox_markets.config(state='disabled')
 
         self.combobox_markets.config(values=self.markets)
@@ -243,25 +256,25 @@ class Market_Page:
             r.destroy()
 
         search_wnd.minsize(400,500)
-        search_wnd.title("Szukaj towaru")
+        search_wnd.title(ptl("Search commoditie"))
         search_wnd.resizable(width=False, height=False)
-        label_commoditie_title = tk.Label(search_wnd, text="Nazwa towaru :", anchor='w')
+        label_commoditie_title = tk.Label(search_wnd, text= ptl("Commoditie name :"), anchor='w')
         label_commoditie_title.pack(padx=5, side='top', fill='x')
         frame = tk.Frame(search_wnd)
         frame.pack(padx=5, side='top', fill='x')
         commoditie_name_entry = tk.Entry(frame, textvariable=material_name)
         commoditie_name_entry.pack(side='left', fill='x', expand=True)
         commoditie_name_entry.focus()
-        self.button_select_market_delete = tk.Button(frame, text="Zamknij", command=close)
+        self.button_select_market_delete = tk.Button(frame, text= ptl("Close"), command=close)
         self.button_select_market_delete.pack(side='right')
         commodities_frame.pack(padx=5, fill='both', expand = True)
         
-        treeview_commodities.heading('#0', text= 'Nazwa stacji')
-        treeview_commodities.heading('Star_System', text= 'System')
-        treeview_commodities.heading('Station_Type', text= 'Typ Stacji')
-        treeview_commodities.heading('Stock', text= 'Stan')
-        treeview_commodities.heading('BuyPrice', text= 'Cena kupna')
-        treeview_commodities.heading('SellPrice', text= 'Cena sprzedazy')
+        treeview_commodities.heading('#0', text= ptl("Station name"))
+        treeview_commodities.heading('Star_System', text= ptl("System name"))
+        treeview_commodities.heading('Station_Type', text= ptl("Station type"))
+        treeview_commodities.heading('Stock', text= ptl("Stock"))
+        treeview_commodities.heading('BuyPrice', text= ptl("Buy price"))
+        treeview_commodities.heading('SellPrice', text= ptl("Sell price"))
         treeview_commodities.pack(fill ="both", expand = True)
         treeview_commodities.bind("<Double-1>", treeview_OnDoubleClick)
         search_wnd.bind("<Key>", search)

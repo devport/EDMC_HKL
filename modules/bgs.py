@@ -11,6 +11,7 @@ from modules.db import BGSMini_DB
 
 this = sys.modules[__name__]
 
+from tools import ptl
 
 class BGS_Page:
 
@@ -45,7 +46,7 @@ class BGS_Page:
     self.topframe = tk.Frame(self.parent, height=20)
     self.topframe.pack(fill='x')
 
-    self.label_group = tk.Label(self.topframe, text="Grupa : ")
+    self.label_group = tk.Label(self.topframe, text= ptl('Group :'))
     self.label_group.pack(side="left", expand=False)
     
 
@@ -65,14 +66,11 @@ class BGS_Page:
     #main
     self.mainframe = tk.Frame(self.parent)
     self.mainframe.pack(padx=10, expand = True, fill ="both")
-    self.label_system = tk.Label(self.mainframe, text="Systemy :", anchor='w')
+    self.label_system = tk.Label(self.mainframe, text= ptl('Systems :'), anchor='w')
     self.label_system.pack()
 
     self.treeview = ttk.Treeview(self.mainframe, columns=('Factions_State', 'Factions_Influence'), show = 'tree', selectmode="browse")
     self.treeview.pack(side="bottom", expand = True, fill ="both")
-    self.treeview.heading('#0', text= 'Nazwa')
-    self.treeview.heading('Factions_State', text= 'Stan')
-    self.treeview.heading('Factions_Influence', text= 'Wpływy')
     self.treeview.column('#0', minwidth=50, width=150)
     self.treeview.column('Factions_State', minwidth=20, width=20)
     self.treeview.column('Factions_Influence', minwidth=20, width=20)
@@ -125,11 +123,11 @@ class BGS_Page:
     group_rows = self.db.Select('cmdr_groups', 'id, name', '')
     groups = []
     if group_rows :
-      groups.append("Wszystkie")
+      groups.append(ptl("All"))
       for group_item in group_rows:
          groups.append(group_item[1])
     else:
-       groups.append("Wszystkie")
+       groups.append(ptl("None"))
     
     self.combobox_current_group.config(values=groups)
     self.combobox_current_group.current(0)
@@ -137,6 +135,12 @@ class BGS_Page:
       self.combobox_current_group.set(self.current_group['name'])
 
   # -- Systemy
+    self.label_group.config(text = ptl('Group :'))
+    self.label_system.config(text= ptl('Systems :'))
+    self.treeview.heading('#0', text= ptl('Name'))
+    self.treeview.heading('Factions_State', text= ptl('State'))
+    self.treeview.heading('Factions_Influence', text= ptl('Influence'))
+
     if self.current_group != None :
       system_rows = self.db.Select('cmdr_systems', 'system_id, star_system, faction_name, faction_state, influence, scan_time', F"group_id = {self.current_group['id']}")
     else:

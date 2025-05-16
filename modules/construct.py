@@ -6,6 +6,8 @@ from tkinter import ttk
 from pathlib import Path
 from modules.db import BGSMini_DB
 
+from tools import ptl
+
 dbg_mode = False
 
 class Construct_Page:
@@ -57,15 +59,38 @@ class Construct_Page:
 #aktualizacja zawartosci widgetow
   def update_widgets(self):
     print('Depot Page : begin update_widgets')
+
+    self.frame_system.config(text= ptl("System"))
+    self.frame_object.config(text= ptl("Object"))
+    self.frame_market.config(text= ptl("Market"))
+
+    self.label_object.config(text= ptl("Object : "))
+    self.label_current_object.config(text= ptl("Current : "))
+    self.button_current_object_add.config(text= ptl("Add"))
+    self.button_current_object_show.config(text= ptl("Show"))
+    self.button_object_del.config(text= ptl("Delete"))
+
+    self.label_current_market.config(text= ptl("Current : "))
+    self.label_market.config(text= ptl("Market : "))
+    self.button_current_market_add.config(text= ptl("Add"))
+    self.button_current_market_show.config(text= ptl("Show"))
+    self.button_market_del.config(text= ptl("Delete"))
+
+    self.treeview_material_list.heading('#0', text= ptl("Material name"))
+    self.treeview_material_list.heading('CS_RequiredAmount', text= ptl("Demand"))
+    self.treeview_material_list.heading('CS_ProvidedAmount', text= ptl("Left"))
+    self.treeview_material_list.heading('FC_State', text= ptl("Market"))
+
+
     #frame system
     system_rows = self.db.Select('cmdr_systems', 'star_system', '')
     self.systems = []
     if system_rows :
-      self.systems.append("Wszystkie")
+      self.systems.append(ptl("All"))
       for system_item in system_rows:
         self.systems.append(system_item[0])
     else:
-      self.systems.append("Brak")
+      self.systems.append(ptl("None"))
 
     self.combobox_systems.config(values=self.systems)
     self.combobox_systems.current(0)
@@ -97,7 +122,7 @@ class Construct_Page:
 
       self.combobox_objects.config(state='readonly')
     else:
-      self.objects.append("Brak")
+      self.objects.append(ptl("None"))
       self.combobox_objects.config(state='disabled')
 
     self.combobox_objects.config(values=self.objects)
@@ -106,25 +131,25 @@ class Construct_Page:
     if self.select_object != None:
       self.combobox_objects.set(self.select_object['StationName'])
       ConstructionProgress = round(self.select_object['ConstructionProgress']*100,2)
-      self.label_progress.config(text="Procent ukończenia : " + str(ConstructionProgress) + " %")
+      self.label_progress.config(text= ptl("Completed : ") + str(ConstructionProgress) + " %")
 
     if self.current_object != None:
-      self.label_current_object.config(text="Aktualny obiekt :" + str(self.current_object['StationName']))
+      self.label_current_object.config(text= ptl("Current object : ") + str(self.current_object['StationName']))
     
     #aktualny rynek
     if self.current_market != None:
-      self.label_current_market.config(text="Aktualny rynek :"+str(self.current_market['StationName']))
+      self.label_current_market.config(text=ptl("Current market : ")+str(self.current_market['StationName']))
 
     #---wczytanie listy rynkow -----------------------------------------------------------------------------
     self.markets = []
     market_rows = self.db.Select('markets', 'market_id, name, station_type', '')
     if market_rows:
-      self.markets.append("Żaden")
+      self.markets.append(ptl("None"))
       for market_row in market_rows:
         self.markets.append(market_row[1])
       self.combobox_markets.config(state='readonly')
     else:
-      self.markets.append("Brak")
+      self.markets.append(ptl("None"))
       self.combobox_markets.config(state='disabled')
 
     self.combobox_markets.config(values=self.markets)
@@ -187,27 +212,27 @@ class Construct_Page:
   def show(self, parent):
     self.parent = parent
     #frames
-    frame_system = tk.LabelFrame(self.parent, text="System")
-    frame_system.pack(side="top", fill='x')
-    frame_object = tk.LabelFrame(self.parent, text="Obiekt")
-    frame_object.pack(side="top", fill='x')
-    frame_market = tk.LabelFrame(self.parent, text="Rynek")
-    frame_market.pack(side="top", fill='x')
-    frame_object_frame1 = tk.Frame(frame_object, height=50)
+    self.frame_system = tk.LabelFrame(self.parent, text= ptl("System"))
+    self.frame_system.pack(side="top", fill='x')
+    self.frame_object = tk.LabelFrame(self.parent, text= ptl("Object"))
+    self.frame_object.pack(side="top", fill='x')
+    self.frame_market = tk.LabelFrame(self.parent, text= ptl("Market"))
+    self.frame_market.pack(side="top", fill='x')
+    frame_object_frame1 = tk.Frame(self.frame_object, height=50)
     frame_object_frame1.pack(side='top', fill='x', expand=True)
-    frame_object_frame2 = tk.Frame(frame_object, height=50)
+    frame_object_frame2 = tk.Frame(self.frame_object, height=50)
     frame_object_frame2.pack(side='top', fill='x', expand=True)
-    frame_object_frame3 = tk.Frame(frame_object, height=50)
+    frame_object_frame3 = tk.Frame(self.frame_object, height=50)
     frame_object_frame3.pack(side='top', fill='x', expand=True)
-    frame_market_frame1 = tk.Frame(frame_market, height=50)
+    frame_market_frame1 = tk.Frame(self.frame_market, height=50)
     frame_market_frame1.pack(side='top', fill='x')
-    frame_market_frame2 = tk.Frame(frame_market, height=50)
+    frame_market_frame2 = tk.Frame(self.frame_market, height=50)
     frame_market_frame2.pack(side='top', fill='x')
     frame_show_option = tk.Frame(self.parent, height=50)
     frame_show_option.pack(side='top', fill='x')
   
     #frame_system
-    self.combobox_systems = ttk.Combobox(frame_system, values = [])
+    self.combobox_systems = ttk.Combobox(self.frame_system, values = [])
     self.combobox_systems.pack(side='left', fill='x', expand=True)
     self.combobox_systems.config(state='readonly')
 
@@ -223,7 +248,7 @@ class Construct_Page:
     self.combobox_systems.bind('<<ComboboxSelected>>', Select_System_Combo)
 
     #frame_object
-    self.label_current_object  = tk.Label(frame_object_frame1, text="Aktualny :", anchor='w')
+    self.label_current_object  = tk.Label(frame_object_frame1, text= ptl("Current : "), anchor='w')
     self.label_current_object.pack(side='left', fill='x', expand=True)
 
     def current_object_add():
@@ -234,7 +259,7 @@ class Construct_Page:
           self.db.Insert('system_objects', 'star_system, stationname, market_id, progress', f"\"{self.current_object['StarSystem']}\", \"{self.current_object['StationName']}\", {self.current_object['MarketID']}, {self.current_object['ConstructionProgress']}")
         self.update_widgets()
 
-    self.button_current_object_add = tk.Button(frame_object_frame1, text="Dodaj", command=current_object_add)
+    self.button_current_object_add = tk.Button(frame_object_frame1, text= ptl("Add"), command=current_object_add)
     self.button_current_object_add.pack(side='left', expand=False)
 
     def current_object_show():
@@ -243,11 +268,11 @@ class Construct_Page:
         self.select_object_materials = self.current_object_materials
         self.update_widgets()
 
-    self.button_current_object_show = tk.Button(frame_object_frame1, text="Pokaż", command=current_object_show)
+    self.button_current_object_show = tk.Button(frame_object_frame1, text= ptl("Show"), command=current_object_show)
     self.button_current_object_show.pack(side='left', expand=False)
 
-    label_object = tk.Label(frame_object_frame2, text="Obiekt :", anchor='w')
-    label_object.pack(side='left', expand=False)
+    self.label_object = tk.Label(frame_object_frame2, text= ptl("Object : "), anchor='w')
+    self.label_object.pack(side='left', expand=False)
 
     self.combobox_objects = ttk.Combobox(frame_object_frame2, values = [])
     #self.combobox_objects.config(state='disabled')
@@ -279,15 +304,15 @@ class Construct_Page:
         self.select_object_materials = None
         self.update_widgets()
 
-    button_object_del = tk.Button(frame_object_frame2, text="Usuń", command=select_object_remove)
-    button_object_del.pack(side='left', expand=False)
+    self.button_object_del = tk.Button(frame_object_frame2, text= ptl("Delete"), command=select_object_remove)
+    self.button_object_del.pack(side='left', expand=False)
     
-    self.label_progress = tk.Label(frame_object_frame3, text="Procent ukończenia :", anchor='w')
+    self.label_progress = tk.Label(frame_object_frame3, text= ptl("Completed : "), anchor='w')
     self.label_progress.pack(side='left', anchor='w')
 
 
     #----------------
-    self.label_current_market  = tk.Label(frame_market_frame1, text="Aktualny rynek :", anchor='w')
+    self.label_current_market  = tk.Label(frame_market_frame1, text= ptl("Current : "), anchor='w')
     self.label_current_market.pack(side='left', fill='x', expand=True)
 
     def current_market_add():
@@ -297,7 +322,7 @@ class Construct_Page:
         self.app.market.save()
         self.update_widgets()
 
-    self.button_current_market_add = tk.Button(frame_market_frame1, text="Dodaj", command=current_market_add)
+    self.button_current_market_add = tk.Button(frame_market_frame1, text= ptl("Add"), command=current_market_add)
     self.button_current_market_add.pack(side='left', expand=False)
 
     def current_market_show():
@@ -308,11 +333,11 @@ class Construct_Page:
         self.select_market_materials = self.current_market_materials 
         self.update_widgets()
 
-    self.button_current_market_show = tk.Button(frame_market_frame1, text="Pokaż", command=current_market_show)
+    self.button_current_market_show = tk.Button(frame_market_frame1, text= ptl("Show"), command=current_market_show)
     self.button_current_market_show.pack(side='left', expand=False)
 
-    label_market = tk.Label(frame_market_frame2, text="Rynek :", anchor='w')
-    label_market.pack(side='left', expand=False)
+    self.label_market = tk.Label(frame_market_frame2, text= ptl("Market : "), anchor='w')
+    self.label_market.pack(side='left', expand=False)
 
     self.combobox_markets = ttk.Combobox(frame_market_frame2, values = [])
     self.combobox_markets.config(state='readonly')
@@ -334,12 +359,12 @@ class Construct_Page:
         self.select_market_materials = None
         self.update_widgets()
 
-    button_market_del = tk.Button(frame_market_frame2, text="Usuń", command=market_delete)
-    button_market_del.pack(side='left', expand=False)
+    self.button_market_del = tk.Button(frame_market_frame2, text= ptl("Delete"), command=market_delete)
+    self.button_market_del.pack(side='left', expand=False)
 
     def update_check_completed():
       self.update_widgets()
-    self.checkbutton_completed = tk.Checkbutton(frame_show_option, text='Ukrywaj zasypane materiały', variable=self.check_completed, onvalue=1, offvalue=0, command=update_check_completed)
+    self.checkbutton_completed = tk.Checkbutton(frame_show_option, text= ptl("Hide completed content"), variable=self.check_completed, onvalue=1, offvalue=0, command=update_check_completed)
     self.checkbutton_completed.pack(side='top', anchor='w')
     
     #---------------------------------------------------------------------
@@ -356,10 +381,7 @@ class Construct_Page:
 
     self.treeview_material_list = ttk.Treeview(self.mainframe,columns=('CS_RequiredAmount', 'CS_ProvidedAmount', 'FC_State'), selectmode="browse")
     self.treeview_material_list.pack(side="bottom", expand = True, fill ="both")
-    self.treeview_material_list.heading('#0', text= 'Materiał')
-    self.treeview_material_list.heading('CS_RequiredAmount', text= 'Wymagane')
-    self.treeview_material_list.heading('CS_ProvidedAmount', text= 'Pozostało')
-    self.treeview_material_list.heading('FC_State', text= 'Rynek')
+
     self.treeview_material_list.column('#0', minwidth=50, width=120)
     self.treeview_material_list.column('CS_RequiredAmount', minwidth=20, width=50)
     self.treeview_material_list.column('CS_ProvidedAmount', minwidth=20, width=50)

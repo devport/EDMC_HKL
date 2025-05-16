@@ -10,6 +10,8 @@ from modules.db import BGSMini_DB
 from config import config, appname, appversion
 from pathlib import Path
 
+from tools import ptl
+
 class MyApp:
     dbg_mode = False
     db = None
@@ -36,17 +38,17 @@ class MyApp:
 
     def plugin_app(self, parent):
         frame = tk.Frame(parent)
-        notebook = ttk.Notebook(frame)
+        self.notebook = ttk.Notebook(frame)
 
-        notebook.config(width=600, height=550)
-        notebook.pack(expand = True, fill ="both")
+        self.notebook.config(width=600, height=550)
+        self.notebook.pack(expand = True, fill ="both")
 
         #main_frame = tk.Frame(notebook, width= 250, height= 200)
-        bgs_frame = tk.Frame(notebook)
-        depot_frame = tk.Frame(notebook)
-        system_frame = tk.Frame(notebook)
-        station_frame = tk.Frame(notebook)
-        market_frame = tk.Frame(notebook)
+        bgs_frame = tk.Frame(self.notebook)
+        depot_frame = tk.Frame(self.notebook)
+        system_frame = tk.Frame(self.notebook)
+        station_frame = tk.Frame(self.notebook)
+        market_frame = tk.Frame(self.notebook)
 
         #main_frame.pack(expand = True, fill ="both")
         bgs_frame.pack(expand = True, fill ="both")
@@ -56,12 +58,12 @@ class MyApp:
         market_frame.pack(expand = True, fill = "both") 
 
         #notebook.add(main_frame, text ='Main') 
-        notebook.add(bgs_frame, text ='BGS') 
-        notebook.add(depot_frame, text ='Konstrukcje')
-        notebook.add(system_frame, text ='Systemy')
-        notebook.add(station_frame, text ='Stacje')
-        notebook.add(market_frame, text ='Rynki')
-
+        self.notebook.add(bgs_frame, text = ptl('BGS')) 
+        self.notebook.add(depot_frame, text = ptl('Constructions'))
+        self.notebook.add(system_frame, text = ptl('Systems'))
+        self.notebook.add(station_frame, text = ptl('Stations'))
+        self.notebook.add(market_frame, text = ptl('Markets'))
+    
         self.bgs.show(bgs_frame)
         self.depot.show(depot_frame)
         self.system.show(system_frame)
@@ -70,11 +72,18 @@ class MyApp:
         return frame
 
     def update_widgets(self):
+        self.notebook.tab(0, text=ptl('BGS'))
+        self.notebook.tab(1, text=ptl('Constructions'))
+        self.notebook.tab(2, text=ptl('Systems'))
+        self.notebook.tab(3, text=ptl('Stations'))
+        self.notebook.tab(4, text=ptl('Markets'))
+
         self.system.update_widgets()
         self.bgs.update_widgets()
         self.depot.update_widgets()
         self.market.update_widgets()
         self.station.update_widgets()
+
 
 
     #czytanie jurnala (zdarzen) i wyciagniecie danych
