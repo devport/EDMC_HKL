@@ -260,8 +260,9 @@ class System_Page:
         remove_wnd = tk.Toplevel(self.parent)
 
         def system_query_remove_yes():
-            self.db.Delete('cmdr_systems', f"UPPER(star_system) = '{self.selected_system.upper()}'")
+            self.db.Delete('cmdr_systems', f"UPPER(star_system) = \"{self.selected_system.upper()}\"")
             self.db.Delete('system_factions', f"UPPER(star_system) = \"{self.selected_system.upper()}\"")  
+            self.db.Delete('stations', f"UPPER(StarSystem) = \"{self.selected_system.upper()}\"")
             remove_wnd.destroy()
             remove_wnd.update()
             self.app.update_widgets()
