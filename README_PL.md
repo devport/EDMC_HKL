@@ -45,7 +45,7 @@ Co do zrobienia w dalszej przyszłości:
 * notatnik i możliwość jego udostępniania innym CMDR.
 * wystawianie alertów dla innych CMDR'ów, aby pomogli w np. ustabilizowaniu wpływów w systemie
 
-
+.
 
 Wtyczka może zawierać błędy.
 
