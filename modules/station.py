@@ -252,7 +252,7 @@ class Station_Page:
                     self.db.Delete('stations', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"")
                 
                 self.db.Insert('stations', 'StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads', 
-                        f"\"{entry.get("StarSystem")}\", {entry.get("SystemAddress")}, \"{entry.get("StationName")}\", \"{entry.get("StationType")}\", {entry.get('MarketID')}, {entry.get("DistFromStarLS")}, \"{entry.get("StationFaction")}\", \"{entry.get("StationGovernment")}\", \"{entry.get("StationGovernment_Localised")}\", \"{entry.get("StationEconomy")}\", \"{entry.get("StationEconomy_Localised")}\", \"{entry.get("StationEconomies")}\", \"{entry.get("LandingPads")}\" ")
+                        f"\"{entry.get('StarSystem')}\", {entry.get('SystemAddress')}, \"{entry.get('StationName')}\", \"{entry.get('StationType')}\", {entry.get('MarketID')}, {entry.get('DistFromStarLS')}, \"{entry.get('StationFaction')}\", \"{entry.get('StationGovernment')}\", \"{entry.get('StationGovernment_Localised')}\", \"{entry.get('StationEconomy')}\", \"{entry.get('StationEconomy_Localised')}\", \"{entry.get('StationEconomies')}\", \"{entry.get('LandingPads')}\" ")
                 self.update_widgets()
 
             '''self.StationName = entry.get("StationName")
