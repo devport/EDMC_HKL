@@ -247,9 +247,9 @@ class Station_Page:
         system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = '{system}' ", True)
         if system_row:
             if entry.get("event") == "Docked":
-                station_object = self.db.Select('stations', '*', f"UPPER(StarSystem) = \"{entry.get("StarSystem").upper()}\" AND UPPER(StationName) = \"{entry.get("StationName").upper()}\"", True)
+                station_object = self.db.Select('stations', '*', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"", True)
                 if station_object : 
-                    self.db.Delete('stations', f"UPPER(StarSystem) = \"{entry.get("StarSystem").upper()}\" AND UPPER(StationName) = \"{entry.get("StationName").upper()}\"")
+                    self.db.Delete('stations', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"")
                 
                 self.db.Insert('stations', 'StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads', 
                         f"\"{entry.get("StarSystem")}\", {entry.get("SystemAddress")}, \"{entry.get("StationName")}\", \"{entry.get("StationType")}\", {entry.get('MarketID')}, {entry.get("DistFromStarLS")}, \"{entry.get("StationFaction")}\", \"{entry.get("StationGovernment")}\", \"{entry.get("StationGovernment_Localised")}\", \"{entry.get("StationEconomy")}\", \"{entry.get("StationEconomy_Localised")}\", \"{entry.get("StationEconomies")}\", \"{entry.get("LandingPads")}\" ")
