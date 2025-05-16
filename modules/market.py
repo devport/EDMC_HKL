@@ -455,9 +455,9 @@ class Market_Page:
 
         if entry['event'] == 'Market':      
             self.current_market = {'StationName' : entry['StationName'], 'MarketID' : entry['MarketID'], 'StationType' : entry['StationType']}
+            self.load_journal()
             market_row = self.db.Select('markets', 'name, star_system, station_type', f"market_id = {entry['MarketID']} ", True)    
             if market_row:
-                self.load_journal()
                 self.save()
             self.update_widgets() 
         
