@@ -81,6 +81,8 @@ class Construct_Page:
     self.treeview_material_list.heading('CS_ProvidedAmount', text= ptl("Left"))
     self.treeview_material_list.heading('FC_State', text= ptl("Market"))
 
+    self.checkbutton_completed.config(text= ptl("Hide completed content"))
+
 
     #frame system
     system_rows = self.db.Select('cmdr_systems', 'star_system', '')

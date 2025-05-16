@@ -6,7 +6,7 @@ import logging
 class BGSMini_DB:
   def __init__(self, plugin_dir):
     self.dbfile_name = 'local.db'
-    self.dbg_mode = True
+    self.dbg_mode = False
 
 
     self.dbfile_path = Path(plugin_dir) / self.dbfile_name
