@@ -53,5 +53,6 @@ Wtyczka może zawierać błędy.
 ![Screenshot](screens/bgs.png)
 ![Screenshot](screens/construct.png)
 ![Screenshot](screens/systems.png)
+![Screenshot](screens/station.png)
 ![Screenshot](screens/markets.png)
 ![Screenshot](screens/commodities_search.png)
