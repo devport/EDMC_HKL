@@ -41,9 +41,10 @@ class Station_Page:
 
         def Select_Group_Combo(event):
             group_row = self.db.Select('cmdr_groups', 'id, name', f"name = \"{self.combobox_groups.get()}\" ", True)
+            self.select_group = None
             if group_row:
                 self.select_group = {"id" : group_row[0], "name" :group_row[1]}
-                self.update_widgets()
+            self.update_widgets()
 
         self.combobox_groups.bind('<<ComboboxSelected>>', Select_Group_Combo)
 
@@ -55,9 +56,10 @@ class Station_Page:
 
         def Select_System_Combo(event):
             system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = \"{self.combobox_systems.get()}\" ", True)
+            self.select_system = None
             if system_row:
                 self.select_system = {"star_system" :system_row[0]}
-                self.update_widgets()
+            self.update_widgets()
 
         self.combobox_systems.bind('<<ComboboxSelected>>', Select_System_Combo)
 
@@ -247,13 +249,14 @@ class Station_Page:
         system_row = self.db.Select('cmdr_systems', 'star_system', f"star_system = '{system}' ", True)
         if system_row:
             if entry.get("event") == "Docked":
-                station_object = self.db.Select('stations', '*', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"", True)
-                if station_object : 
-                    self.db.Delete('stations', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"")
+                if entry.get('StationType') != 'SurfaceStation' or entry.get('StationType') != 'FleetCarrier' : 
+                    station_object = self.db.Select('stations', '*', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"", True)
+                    if station_object : 
+                        self.db.Delete('stations', f"UPPER(StarSystem) = \"{entry.get('StarSystem').upper()}\" AND UPPER(StationName) = \"{entry.get('StationName').upper()}\"")
                 
-                self.db.Insert('stations', 'StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads', 
+                    self.db.Insert('stations', 'StarSystem, SystemAddress, StationName, StationType, MarketID, DistFromStarLS, StationFaction, StationGovernment, StationGovernment_Localised, StationEconomy, StationEconomy_Localised, StationEconomies, LandingPads', 
                         f"\"{entry.get('StarSystem')}\", {entry.get('SystemAddress')}, \"{entry.get('StationName')}\", \"{entry.get('StationType')}\", {entry.get('MarketID')}, {entry.get('DistFromStarLS')}, \"{entry.get('StationFaction')}\", \"{entry.get('StationGovernment')}\", \"{entry.get('StationGovernment_Localised')}\", \"{entry.get('StationEconomy')}\", \"{entry.get('StationEconomy_Localised')}\", \"{entry.get('StationEconomies')}\", \"{entry.get('LandingPads')}\" ")
-                self.update_widgets()
+                    self.update_widgets()
 
             '''self.StationName = entry.get("StationName")
             self.StationType = entry.get("StationType")
